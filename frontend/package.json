@@ -1,0 +1,38 @@
+{
+  "name": "worktime2",
+  "version": "1.0.0",
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },  
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.5",
+    "@mui/lab": "^5.0.0-alpha.161",
+    "@mui/material": "^5.15.5",
+    "@mui/x-date-pickers": "^6.19.0",
+    "react-datepicker": "^4.25.0",
+    "react-router-dom": "^6.21.3",
+    "react-scripts": "^5.0.1",
+    "sweetalert2": "^11.10.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

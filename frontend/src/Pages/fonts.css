@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'fontsss';
+  src: url('./font/jf-openhuninn-2.0.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+#root {
+  font-family: 'fontsss', sans-serif; /* 使用您定义的字体 */
+}
