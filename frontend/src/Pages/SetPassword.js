@@ -4,13 +4,45 @@ import "./fonts.css"; // Import the CSS file with font-face rule
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 import { Button, OutlinedInput, Box, Typography } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const SetPassword = () => {
   const [homPagePassword, setHomPagePassword] = useState("");
   const [orderDelPassword, setOrderDelPassword] = useState("");
+  const [isSnackbarOpen, setSnackbarOpen] = React.useState(false);
 
-  const handleWorkReportSubmit = () => {
-    console.log("Submitting work report:", homPagePassword);
+  const handleWorkReportSubmit = async () => {
+    try {
+      console.log(homPagePassword);
+      console.log(orderDelPassword);
+      const requestData = [
+        {
+          values: orderDelPassword,
+          execution: "work",
+        },
+        {
+          values: homPagePassword,
+          execution: "home",
+        },
+      ];
+      // const response = await fetch("http://localhost:3001/api/passwords", {
+      const response = await fetch(
+        process.env.REACT_APP_API_BASE_URL + "/api/passwords",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData), // 将请求数据转换为 JSON 字符串
+        }
+      );
+      if (response.ok) {
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error("Error during fetch:", error);
+    }
   };
 
   const navigate = useNavigate(); // Initialize the useNavigate hook
@@ -77,6 +109,20 @@ const SetPassword = () => {
           取消
         </Button>
       </Box>
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={1500}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={() => setSnackbarOpen(false)}
+          severity="success"
+        >
+          密碼已更新
+        </MuiAlert>
+      </Snackbar>
     </Box>
   );
 };

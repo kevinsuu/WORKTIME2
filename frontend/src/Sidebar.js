@@ -32,12 +32,38 @@ const Sidebar = () => {
     setPassword("");
     navigate("/");
   };
-  const handleDialogCheck = () => {
+  const handleDialogCheck = async () => {
     setDialogOpen(false);
-    if (password === "1234") {
-      setPassword("");
-    } else {
-      navigate("/");
+
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_API_BASE_URL + "/api/passwords",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const responseData = await response.json();
+        let homePassword = "";
+        for (const password of responseData) {
+          if (password.execution === "home") {
+            homePassword = password.values;
+
+            break; // 找到后可以提前结束循环
+          }
+        }
+        if (homePassword == password) {
+          setPassword("");
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (error) {
+      console.error("Error during fetch:", error);
     }
   };
   const handlePasswordChange = (event) => {

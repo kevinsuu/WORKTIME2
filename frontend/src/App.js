@@ -2,12 +2,12 @@
 import React from "react";
 import Sidebar from "./Sidebar";
 import StartWork from "./Pages/StartWork";
-import SetPassword from "./Pages/SetSleep";
+import SetSleep from "./Pages/SetSleep";
 import HomePage from "./Pages/HomePage";
 import CompleteWork from "./Pages/CompleteWork";
 import DataMaintain from "./Pages/DataMaintain";
 import DataExport from "./Pages/DataExport";
-import SetSleep from "./Pages/SetPassword";
+import SetPassword from "./Pages/SetPassword";
 
 import Grid from "@mui/material/Grid";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Import Routes
