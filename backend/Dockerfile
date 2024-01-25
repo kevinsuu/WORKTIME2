@@ -19,5 +19,7 @@ COPY . .
 # 暴露應用程式使用的端口（假設是 3000）
 EXPOSE 3001
 RUN pwd
+RUN ls -al /app
+
 # 啟動應用程式
 CMD ["node", "app.js"]
