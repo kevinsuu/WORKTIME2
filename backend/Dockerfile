@@ -19,6 +19,7 @@ COPY . .
 # 暴露應用程式使用的端口（假設是 3000）
 EXPOSE 3001
 RUN pwd
+RUN cd backend
 RUN ls -al /app
 
 # 啟動應用程式
