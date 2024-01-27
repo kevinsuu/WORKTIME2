@@ -9,10 +9,10 @@ class ListController {
   async getList(req, res) {
     try {
       const Lists = await List.findAll();
-      res.json({ success: true, ListsInfo: Lists });
+      return res.json({ success: true, listsInfo: Lists });
     } catch (error) {
       console.error("Error retrieving Lists from database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 }

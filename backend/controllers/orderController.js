@@ -8,12 +8,11 @@ class OrderController {
 
   async getOrder(req, res) {
     try {
-      console.log(req.body);
       const Orders = await Order.findAll();
-      res.json({ success: true, ordersInfo: Orders });
+      return res.json({ success: true, ordersInfo: Orders });
     } catch (error) {
       console.error("Error retrieving Orders from database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 }

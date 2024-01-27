@@ -11,7 +11,7 @@ const DataMaintain = () => {
   };
 
   return (
-    <div>
+    <div style={{ padding: "24px" }}>
       <OutlinedInput
         placeholder="報工內容"
         value={workReportContent}

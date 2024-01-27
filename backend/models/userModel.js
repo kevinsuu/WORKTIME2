@@ -1,5 +1,5 @@
 // userModel.js
-class User {
+class UserModel {
   constructor(id, name, email) {
     this.id = id;
     this.name = name;
@@ -7,4 +7,4 @@ class User {
   }
 }
 
-module.exports = User;
+module.exports = UserModel;

@@ -1,20 +1,8 @@
 // Sidebar.js
 import React, { useState } from "react";
-import {
-  List,
-  ListItemButton,
-  ListItemText,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-} from "@mui/material";
+import { List, ListItemButton, ListItemText, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-
+import Avatar from "@mui/material/Avatar";
 import { Link } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
@@ -22,6 +10,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 const Sidebar = () => {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [password, setPassword] = useState("");
+
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -36,15 +25,12 @@ const Sidebar = () => {
     setDialogOpen(false);
 
     try {
-      const response = await fetch(
-        process.env.REACT_APP_API_BASE_URL + "/api/passwords",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/api/passwords", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         const responseData = await response.json();
@@ -75,14 +61,16 @@ const Sidebar = () => {
       sx={{
         backgroundColor: "#776B5D",
         color: "white",
-        height: "100vh",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        height: "100%",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 1)", // 添加陰影
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
       }}
     >
-      <Box sx={{ fontSize: "24px", color: "#3E3232" }}>報工2.0</Box>
+      <Avatar alt="公司logo" src="/SM-2.png" sx={{ width: 200, height: 60, marginRight: "8px", borderRadius: 0 }} />
+
+      <Box sx={{ padding: "12px", fontSize: "24px", color: "#3E3232" }}>報工2.0</Box>
 
       <List sx={{ width: "100%" }}>
         <ListItemButton
@@ -92,6 +80,7 @@ const Sidebar = () => {
             marginBottom: "8px",
             borderRadius: "8px",
             "&:hover": { backgroundColor: "#B0A695" },
+            borderBottom: "1px solid #3E3232",
           }}
         >
           <ListItemText primary="首頁" />
@@ -103,6 +92,7 @@ const Sidebar = () => {
             marginBottom: "8px",
             borderRadius: "8px",
             "&:hover": { backgroundColor: "#B0A695" },
+            borderBottom: "1px solid #3E3232",
           }}
         >
           <ListItemText primary="開始報工" />
@@ -114,16 +104,20 @@ const Sidebar = () => {
             marginBottom: "8px",
             borderRadius: "8px",
             "&:hover": { backgroundColor: "#B0A695" },
+            borderBottom: "1px solid #3E3232",
           }}
         >
           <ListItemText primary="完成報工" />
         </ListItemButton>
         <ListItemButton
+          component={Link}
+          to="/dataMaintain"
           onClick={handleDialogOpen}
           sx={{
             marginBottom: "8px",
             borderRadius: "8px",
             "&:hover": { backgroundColor: "#B0A695" },
+            borderBottom: "1px solid #3E3232",
           }}
         >
           <ListItemText primary="資料維護作業" />
@@ -138,6 +132,7 @@ const Sidebar = () => {
             marginBottom: "8px",
             borderRadius: "8px",
             "&:hover": { backgroundColor: "#B0A695" },
+            borderBottom: "1px solid #3E3232",
           }}
         >
           <ListItemText primary="資料匯出作業" />
@@ -151,6 +146,7 @@ const Sidebar = () => {
             marginBottom: "8px",
             borderRadius: "8px",
             "&:hover": { backgroundColor: "#B0A695" },
+            borderBottom: "1px solid #3E3232",
           }}
         >
           <ListItemText primary="密碼設定" />
@@ -164,6 +160,7 @@ const Sidebar = () => {
             marginBottom: "8px",
             borderRadius: "8px",
             "&:hover": { backgroundColor: "#B0A695" },
+            borderBottom: "1px solid #3E3232",
           }}
         >
           <ListItemText primary="休息時間設定" />
@@ -187,11 +184,7 @@ const Sidebar = () => {
         <DialogTitle>請輸入密碼</DialogTitle>
         <DialogContent>
           <FormControl>
-            <TextField
-              type="password"
-              value={password}
-              onChange={handlePasswordChange}
-            />
+            <TextField type="password" value={password} onChange={handlePasswordChange} />
           </FormControl>
         </DialogContent>
         <DialogActions>

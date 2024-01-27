@@ -9,10 +9,10 @@ class PasswordController {
   async getPassword(req, res) {
     try {
       const passwords = await Password.findAll();
-      res.json(passwords);
+      return res.json(passwords);
     } catch (error) {
       console.error("Error retrieving passwords from database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 
@@ -31,18 +31,16 @@ class PasswordController {
         );
 
         if (numOfAffectedRows > 0) {
-          const updatedPasswordData = updatedPasswords.map((passwordInstance) =>
-            passwordInstance.get({ plain: true })
-          );
+          const updatedPasswordData = updatedPasswords.map((passwordInstance) => passwordInstance.get({ plain: true }));
           updatedPasswordDataArray.push(updatedPasswordData);
         }
       }
 
       // Move res.json outside the loop
-      res.json({ success: true, respone: updatedPasswordDataArray });
+      return res.json({ success: true, respone: updatedPasswordDataArray });
     } catch (error) {
       console.error("Error saving password to database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 }

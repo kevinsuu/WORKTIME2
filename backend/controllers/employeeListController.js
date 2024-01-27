@@ -16,10 +16,10 @@ class EmployeeListController {
           workNumber: workNumber,
         },
       });
-      res.json({ success: true, employeeListsInfo: employeeList });
+      return res.json({ success: true, employeeListsInfo: employeeList });
     } catch (error) {
       console.error("Error retrieving EmployeeLists from database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 }

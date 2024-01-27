@@ -16,16 +16,13 @@ const SetSleep = () => {
       const requestData = {
         time: sleepTime,
       };
-      const response = await fetch(
-        process.env.REACT_APP_API_BASE_URL + "/api/sleeps",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData), // 将请求数据转换为 JSON 字符串
-        }
-      );
+      const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/api/sleeps", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData), // 将请求数据转换为 JSON 字符串
+      });
       if (response.ok) {
         setSnackbarOpen(true);
       }
@@ -39,22 +36,15 @@ const SetSleep = () => {
   return (
     <Box
       sx={{
-        position: "absolute",
-        top: "20%",
-        left: "40%",
         display: "flex",
         minHeight: "300px",
         minWidth: "500px",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        padding: "20px",
+        padding: "24px",
       }}
     >
-      <Typography
-        variant="h5"
-        sx={{ marginBottom: "20px", color: "#503C3C", fontWeight: "bold" }}
-      >
+      <Typography variant="h5" sx={{ marginBottom: "20px", color: "#503C3C", fontWeight: "bold" }}>
         休息時間設定
       </Typography>
 
@@ -69,26 +59,12 @@ const SetSleep = () => {
             backgroundColor: "white", // Set the background color to white for the input
           }}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleWorkReportSubmit}
-          sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}
-        >
+        <Button variant="contained" color="primary" onClick={handleWorkReportSubmit} sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}>
           設定
         </Button>
       </Box>
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={1500}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={() => setSnackbarOpen(false)}
-          severity="success"
-        >
+      <Snackbar open={isSnackbarOpen} autoHideDuration={1500} onClose={() => setSnackbarOpen(false)}>
+        <MuiAlert elevation={6} variant="filled" onClose={() => setSnackbarOpen(false)} severity="success">
           休息時間已設定
         </MuiAlert>
       </Snackbar>

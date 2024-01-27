@@ -9,19 +9,17 @@ class SleepTimeController {
   async getSleepTime(req, res) {
     try {
       const sleepTimes = await SleepTime.findAll();
-      res.json(sleepTimes);
+      return res.json(sleepTimes);
     } catch (error) {
       console.error("Error retrieving SleepTimes from database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 
   async setSleepTime(req, res) {
     const time = req.body.time;
     if (!time) {
-      console.error(
-        "SleepTime is not set. Set a SleepTime before saving to the database."
-      );
+      console.error("SleepTime is not set. Set a SleepTime before saving to the database.");
       return res.status(400).json({ error: "Bad Request" });
     }
 
@@ -37,18 +35,16 @@ class SleepTimeController {
       );
 
       if (numOfAffectedRows > 0) {
-        const updatedSleepTimeData = updatedSleepTimes.map(
-          (SleepTimeInstance) => SleepTimeInstance.get({ plain: true })
-        );
+        const updatedSleepTimeData = updatedSleepTimes.map((SleepTimeInstance) => SleepTimeInstance.get({ plain: true }));
 
-        res.json({ success: true, respone: updatedSleepTimeData });
+        return res.json({ success: true, respone: updatedSleepTimeData });
       } else {
         console.log(`No SleepTime record found with id 1.`);
-        res.status(404).json({ error: "SleepTime not found" });
+        return res.status(404).json({ error: "SleepTime not found" });
       }
     } catch (error) {
       console.error("Error saving SleepTime to database:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 }

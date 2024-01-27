@@ -6,6 +6,7 @@ const OrderController = require("../controllers/orderController");
 const SleepTimeController = require("../controllers/sleepTimeController");
 const ListController = require("../controllers/listController");
 const employeeListController = require("../controllers/employeeListController");
+const StartWorkController = require("../controllers/startWorkController");
 
 const useAsync = (middleware) => {
   return (req, res, next) => {
@@ -31,9 +32,7 @@ router.post("/sleeps", useAsync(SleepTimeController.setSleepTime));
 // List routes
 router.get("/lists", useAsync(ListController.getList));
 // EmployeeList routes
-router.get(
-  "/employeeLists/:moNumber/:workNumber",
-  useAsync(employeeListController.getEmployeeList)
-);
-
+router.get("/employeeLists/:moNumber/:workNumber", useAsync(employeeListController.getEmployeeList));
+// StartWork routes
+router.post("/startWork", useAsync(StartWorkController.insertOrder));
 module.exports = router;

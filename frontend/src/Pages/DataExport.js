@@ -25,22 +25,15 @@ const DataExport = () => {
   return (
     <Box
       sx={{
-        position: "absolute",
-        top: "20%",
-        left: "40%",
         display: "flex",
         minHeight: "300px",
         minWidth: "500px",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        padding: "20px",
+        padding: "24px",
       }}
     >
-      <Typography
-        variant="h5"
-        sx={{ marginBottom: "20px", color: "#503C3C", fontWeight: "bold" }}
-      >
+      <Typography variant="h5" sx={{ marginBottom: "20px", color: "#503C3C", fontWeight: "bold" }}>
         資料匯出作業
       </Typography>
 
@@ -79,20 +72,10 @@ const DataExport = () => {
         />
       </LocalizationProvider>
       <Box sx={{ padding: "12px" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleWorkReportSubmit}
-          sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}
-        >
+        <Button variant="contained" color="primary" onClick={handleWorkReportSubmit} sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}>
           匯出
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleCancelClick}
-          sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}
-        >
+        <Button variant="contained" color="primary" onClick={handleCancelClick} sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}>
           取消
         </Button>
       </Box>

@@ -26,17 +26,13 @@ const SetPassword = () => {
           execution: "home",
         },
       ];
-      // const response = await fetch("http://localhost:3001/api/passwords", {
-      const response = await fetch(
-        process.env.REACT_APP_API_BASE_URL + "/api/passwords",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData), // 将请求数据转换为 JSON 字符串
-        }
-      );
+      const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/api/passwords", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData), // 将请求数据转换为 JSON 字符串
+      });
       if (response.ok) {
         setSnackbarOpen(true);
       }
@@ -53,22 +49,15 @@ const SetPassword = () => {
   return (
     <Box
       sx={{
-        position: "absolute",
-        top: "20%",
-        left: "40%",
         display: "flex",
         minHeight: "300px",
         minWidth: "500px",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        padding: "20px",
+        padding: "24px",
       }}
     >
-      <Typography
-        variant="h5"
-        sx={{ marginBottom: "20px", color: "#503C3C", fontWeight: "bold" }}
-      >
+      <Typography variant="h5" sx={{ marginBottom: "20px", color: "#503C3C", fontWeight: "bold" }}>
         密碼設定
       </Typography>
       <OutlinedInput
@@ -92,34 +81,15 @@ const SetPassword = () => {
         }}
       />
       <Box sx={{ padding: "12px" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleWorkReportSubmit}
-          sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}
-        >
+        <Button variant="contained" color="primary" onClick={handleWorkReportSubmit} sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}>
           設定
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleCancelClick}
-          sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}
-        >
+        <Button variant="contained" color="primary" onClick={handleCancelClick} sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}>
           取消
         </Button>
       </Box>
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={1500}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={() => setSnackbarOpen(false)}
-          severity="success"
-        >
+      <Snackbar open={isSnackbarOpen} autoHideDuration={1500} onClose={() => setSnackbarOpen(false)}>
+        <MuiAlert elevation={6} variant="filled" onClose={() => setSnackbarOpen(false)} severity="success">
           密碼已更新
         </MuiAlert>
       </Snackbar>

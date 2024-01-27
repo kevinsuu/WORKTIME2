@@ -8,16 +8,16 @@ import CompleteWork from "./Pages/CompleteWork";
 import DataMaintain from "./Pages/DataMaintain";
 import DataExport from "./Pages/DataExport";
 import SetPassword from "./Pages/SetPassword";
+import WorkPage from "./Pages/WorkPage";
 
 import Grid from "@mui/material/Grid";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Import Routes
-import { Home } from "@mui/icons-material";
 
 function App() {
   const mainContentStyles = {
     backgroundColor: "#EBE3D5",
     minHeight: "100%",
-    width: "100%",
+    minWidth: "100%",
   };
 
   return (
@@ -26,7 +26,7 @@ function App() {
         <Grid item xs={2}>
           <Sidebar />
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={10}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/startWork" element={<StartWork />} />
@@ -35,6 +35,7 @@ function App() {
             <Route path="/dataExport" element={<DataExport />} />
             <Route path="/setPassword" element={<SetPassword />} />
             <Route path="/setSleep" element={<SetSleep />} />
+            <Route path="/work/:workNumber" element={<WorkPage />} /> {/* 注意這裡的更改 */}
           </Routes>
         </Grid>
       </Grid>

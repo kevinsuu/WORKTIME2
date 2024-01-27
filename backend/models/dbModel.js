@@ -2,8 +2,8 @@
 const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize("WORKTIME2", "postgres", "password", {
-  host: "localhost",
-  // host: "35.221.137.19",
+  host: "postgres",
+  // host: "localhost",
   dialect: "postgres",
   logging: false, // 關閉 SQL logging
 });
