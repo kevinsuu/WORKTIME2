@@ -31,6 +31,8 @@ router.post("/sleeps", useAsync(SleepTimeController.setSleepTime));
 
 // List routes
 router.get("/lists", useAsync(ListController.getList));
+router.get("/lists/:id", useAsync(ListController.getListInfo));
+router.delete("/lists/:id", useAsync(ListController.deleteList));
 // EmployeeList routes
 router.get("/employeeLists/:moNumber/:workNumber", useAsync(employeeListController.getEmployeeList));
 // StartWork routes

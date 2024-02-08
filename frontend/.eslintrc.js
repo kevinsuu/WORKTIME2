@@ -15,6 +15,7 @@ module.exports = {
   plugins: ["react"],
   rules: {
     "no-unused-vars": "off",
+    "react/prop-types": "off",
     "jsx-a11y/anchor-is-valid": "off",
     eqeqeq: "off",
   },

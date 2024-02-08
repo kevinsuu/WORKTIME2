@@ -1,15 +1,32 @@
 // Sidebar.js
 import React, { useState } from "react";
-import { List, ListItemButton, ListItemText, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
+import {
+  List,
+  Snackbar,
+  ListItemButton,
+  ListItemText,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import FormControl from "@mui/material/FormControl";
 import Avatar from "@mui/material/Avatar";
 import { Link } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import SnackbarAlert from "./Component/SnackbarAlert";
 
 const Sidebar = () => {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [password, setPassword] = useState("");
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
+  const [isSnackbarMessage, setSnackbarMessage] = useState("");
+  const [isSnackbarStatus, setSnackbarStatus] = useState("");
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -22,8 +39,6 @@ const Sidebar = () => {
     navigate("/");
   };
   const handleDialogCheck = async () => {
-    setDialogOpen(false);
-
     try {
       const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/api/passwords", {
         method: "GET",
@@ -42,12 +57,19 @@ const Sidebar = () => {
             break; // 找到后可以提前结束循环
           }
         }
+        setSnackbarOpen(true);
+
         if (homePassword == password) {
           setPassword("");
+          setSnackbarMessage("密碼正確");
+          setSnackbarStatus("success");
         } else {
+          setSnackbarMessage("密碼錯誤");
+          setSnackbarStatus("error");
           navigate("/");
         }
       }
+      setDialogOpen(false);
     } catch (error) {
       console.error("Error during fetch:", error);
     }
@@ -194,6 +216,7 @@ const Sidebar = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <SnackbarAlert open={isSnackbarOpen} message={isSnackbarMessage} status={isSnackbarStatus} handleClose={() => setSnackbarOpen(false)} />
     </Box>
   );
 };

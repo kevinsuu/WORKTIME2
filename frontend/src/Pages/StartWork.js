@@ -128,6 +128,7 @@ const SetStartWork = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+
           zIndex: 9999, // 設定 zIndex 以確保 CircularProgress 顯示在最上層
           visibility: loading ? "visible" : "hidden", // 根據 loading 狀態調整顯示/隱藏
         }}
@@ -153,6 +154,7 @@ const SetStartWork = () => {
             sx={{
               marginBottom: "20px",
               width: "300px",
+
               backgroundColor: "white", // Set the background color to white for the input
             }}
           />

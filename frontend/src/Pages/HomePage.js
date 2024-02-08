@@ -90,6 +90,7 @@ const HomePage = () => {
           display: "flex",
           flexDirection: "column",
           height: "77vh",
+          width: "80%",
           alignItems: "center",
         }}
       >
