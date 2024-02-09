@@ -42,6 +42,27 @@ class EmployeeController {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }
+  async getEmployeeInfo(req, res) {
+    const employeeId = req.params.id;
+
+    if (!employeeId) {
+      console.error("employeeId is not set. Set a employeeId before saving to the database.");
+      return res.status(400).json({ error: "Bad Request" });
+    }
+
+    try {
+      const employee = await Employee.findOne({ where: { id: employeeId } });
+      if (!employee) {
+        return res.status(404).json({ error: "Employee not found" });
+      }
+      const employeeData = employee.get({ plain: true });
+
+      return res.json({ success: true, employeeInfo: employeeData });
+    } catch (error) {
+      console.error("Error retrieving employee from database:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
 }
 
 module.exports = new EmployeeController();

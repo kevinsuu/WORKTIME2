@@ -26,21 +26,35 @@ const Password = sequelize.define(
 
 const afterSyncHandler = async () => {
   try {
-    // Add "home" record
-    await Password.findOrCreate({
+    // Check if "home" record exists
+    const homeRecord = await Password.findOne({
       where: {
-        values: "1234",
-        execution: "home",
+        id: 1,
       },
     });
 
-    // Add "work" record
-    await Password.findOrCreate({
-      where: {
+    // If "home" record does not exist, create it
+    if (!homeRecord) {
+      await Password.create({
         values: "1234",
-        execution: "work",
+        execution: "home",
+      });
+    }
+
+    // Check if "work" record exists
+    const workRecord = await Password.findOne({
+      where: {
+        id: 2,
       },
     });
+
+    // If "work" record does not exist, create it
+    if (!workRecord) {
+      await Password.create({
+        values: "1234",
+        execution: "work",
+      });
+    }
   } catch (error) {
     console.error("Error while creating passwords:", error);
   }

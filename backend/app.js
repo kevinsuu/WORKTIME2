@@ -18,7 +18,7 @@ app.get("/api/data", (req, res) => {
 
 app.use("/api/", informationRoutes);
 
-app.get("/", (req, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 

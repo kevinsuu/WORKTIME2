@@ -5,12 +5,14 @@ import { TableRow, styled, TableCell } from "@mui/material";
 const StyledTitleCell = styled(TableCell)(({ theme }) => ({
   fontWeight: "bold",
   borderRight: "1px solid #ccc",
+  padding: "4px 12px", // 調整內邊距
 }));
 
 // 定義 StyledValueCell，維持白色背景
 const StyledValueCell = styled(TableCell)(({ theme }) => ({
   fontWeight: "bold",
   borderRight: "1px solid #ccc",
+  padding: "4px 12px", // 調整內邊距
 }));
 
 const TableCellWithText = ({ leftTitle, leftValue, rightTitle, rightValue }) => (

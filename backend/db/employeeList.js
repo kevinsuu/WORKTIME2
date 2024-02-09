@@ -28,7 +28,7 @@ const EmployeeList = sequelize.define(
       type: DataTypes.TEXT,
     },
     totalTime: {
-      type: DataTypes.TIME,
+      type: DataTypes.TEXT,
     },
   },
   {
@@ -45,7 +45,7 @@ const EmployeeListData = [
     startTime: faker.date.between("2020-01-01", "2024-02-07"),
     endTime: faker.date.between("2024-02-08", "2025-12-31"),
     sleepTime: "1",
-    totalTime: faker.date.between("2024-02-08", "2025-12-31"),
+    totalTime: "0",
   },
   {
     workNumber: "20240121001",
@@ -54,7 +54,7 @@ const EmployeeListData = [
     startTime: faker.date.past(),
     endTime: faker.date.future(),
     sleepTime: "1",
-    totalTime: faker.date.future(),
+    totalTime: "0",
   },
   {
     workNumber: "20240121001",
@@ -63,7 +63,7 @@ const EmployeeListData = [
     startTime: faker.date.past(),
     endTime: faker.date.future(),
     sleepTime: "1",
-    totalTime: faker.date.future(),
+    totalTime: "0",
   },
   {
     workNumber: "20240121002",
@@ -72,7 +72,7 @@ const EmployeeListData = [
     startTime: faker.date.past(),
     endTime: faker.date.future(),
     sleepTime: "1",
-    totalTime: faker.date.future(),
+    totalTime: "0",
   },
   {
     workNumber: "20240121002",
@@ -81,7 +81,7 @@ const EmployeeListData = [
     startTime: faker.date.past(),
     endTime: faker.date.future(),
     sleepTime: "1",
-    totalTime: faker.date.future(),
+    totalTime: "0",
   },
   {
     workNumber: "20240121002",
@@ -90,7 +90,7 @@ const EmployeeListData = [
     startTime: faker.date.past(),
     endTime: faker.date.future(),
     sleepTime: "1",
-    totalTime: faker.date.future(),
+    totalTime: "0",
   },
   {
     workNumber: "20240121003",
@@ -99,7 +99,7 @@ const EmployeeListData = [
     startTime: faker.date.past(),
     endTime: faker.date.future(),
     sleepTime: "1",
-    totalTime: faker.date.future(),
+    totalTime: "0",
   },
   {
     workNumber: "20240121003",
@@ -108,7 +108,7 @@ const EmployeeListData = [
     startTime: faker.date.past(),
     endTime: faker.date.future(),
     sleepTime: "1",
-    totalTime: faker.date.future(),
+    totalTime: "0",
   },
   {
     workNumber: "20240121003",
@@ -117,7 +117,7 @@ const EmployeeListData = [
     startTime: faker.date.past(),
     endTime: faker.date.future(),
     sleepTime: "1",
-    totalTime: faker.date.future(),
+    totalTime: "0",
   },
 ];
 

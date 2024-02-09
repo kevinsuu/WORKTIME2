@@ -9,7 +9,6 @@ import DataMaintain from "./Pages/DataMaintain";
 import DataExport from "./Pages/DataExport";
 import SetPassword from "./Pages/SetPassword";
 import WorkPage from "./Pages/WorkPage";
-
 import Grid from "@mui/material/Grid";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Import Routes
 
@@ -35,7 +34,7 @@ function App() {
             <Route path="/dataExport" element={<DataExport />} />
             <Route path="/setPassword" element={<SetPassword />} />
             <Route path="/setSleep" element={<SetSleep />} />
-            <Route path="/work/:workNumber" element={<WorkPage />} /> {/* 注意這裡的更改 */}
+            <Route path="/work/:workNumber" element={<WorkPage />} />
           </Routes>
         </Grid>
       </Grid>

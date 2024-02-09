@@ -16,6 +16,7 @@ const useAsync = (middleware) => {
 const router = express.Router();
 // Employee routes
 router.get("/employees", useAsync(EmployeeController.getEmployee));
+router.get("/employees/:id", useAsync(EmployeeController.getEmployeeInfo));
 router.post("/employees", useAsync(EmployeeController.setEmployee));
 
 // Password routes
@@ -35,6 +36,12 @@ router.get("/lists/:id", useAsync(ListController.getListInfo));
 router.delete("/lists/:id", useAsync(ListController.deleteList));
 // EmployeeList routes
 router.get("/employeeLists/:moNumber/:workNumber", useAsync(employeeListController.getEmployeeList));
+router.post("/employeeLists/:employeeId/:moNumber/:workNumber", useAsync(employeeListController.addEmployeeList));
+router.post("/employeeLists/:moNumber/:workNumber", useAsync(employeeListController.allEmployeeStartWork));
+router.post("/employeeListSingle/:employeeId/:moNumber/:workNumber", useAsync(employeeListController.singleEmployeeStartWork));
+router.delete("/employeeListSingle/:employeeId/:moNumber/:workNumber", useAsync(employeeListController.singleDeleteEmployee));
+router.put("/employeeListSingle/:employeeId/:moNumber/:workNumber", useAsync(employeeListController.singleCompleteEmployee));
 // StartWork routes
+
 router.post("/startWork", useAsync(StartWorkController.insertOrder));
 module.exports = router;
