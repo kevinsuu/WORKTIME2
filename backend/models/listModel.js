@@ -4,8 +4,7 @@ class ListModel {
     workNumber,
     moNumber,
     location,
-    productionLineCode,
-    productionLineName,
+    productionLineId,
     productNumber,
     productName,
     productSpecification,
@@ -18,8 +17,7 @@ class ListModel {
     this.workNumber = workNumber;
     this.moNumber = moNumber;
     this.location = location;
-    this.productionLineCode = productionLineCode;
-    this.productionLineName = productionLineName;
+    this.productionLineId = productionLineId;
     this.productNumber = productNumber;
     this.productName = productName;
     this.productSpecification = productSpecification;

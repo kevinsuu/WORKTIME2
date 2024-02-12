@@ -24,7 +24,7 @@ services:
     networks:
       - worktime2_default
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./postgres_data:/var/lib/postgresql/data
   nginx:
     image: nginx:latest
     ports:

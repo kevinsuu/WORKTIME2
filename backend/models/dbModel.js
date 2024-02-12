@@ -9,18 +9,12 @@ const sequelize = new Sequelize("WORKTIME2", "postgres", "password", {
 });
 class DataBase {
   constructor() {
-    if (!DataBase.instance) {
-      this.sequelize = sequelize;
-      DataBase.instance = this;
-    }
-
-    return DataBase.instance;
+    this.sequelize = sequelize;
   }
 
-  async query(queryText, values) {
+  async query(queryText) {
     try {
       const result = await this.sequelize.query(queryText, {
-        bind: values,
         type: this.sequelize.QueryTypes.SELECT,
       });
       return result;

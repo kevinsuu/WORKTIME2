@@ -22,37 +22,34 @@ class StartWorkController {
       if (!OrderInfo) {
         return res.status(404).json({ success: false, error: "找不到相關製令單號" });
       }
-      const today = new Date();
+      const now = new Date();
+      const today = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
       const year = today.getFullYear().toString(); // 取得年份的後兩位
       const month = String(today.getMonth() + 1).padStart(2, "0"); // 月份補0
       const day = String(today.getDate()).padStart(2, "0"); // 日補0
       const timeFormat = `${year}${month}${day}`;
       let workNumber = "";
-      const ListInfo = await List.findOne({
-        workNumber: {
-          [Sequelize.Op.like]: timeFormat,
-        },
-      });
-      if (ListInfo) {
-        const numberOfRecords = await List.count({
-          where: {
-            workNumber: {
-              [Sequelize.Op.like]: "20240127%",
-            },
+      const latestRecord = await List.findOne({
+        where: {
+          workNumber: {
+            [Sequelize.Op.like]: `${timeFormat}%`,
           },
-        });
+        },
+        order: [["workNumber", "DESC"]],
+      });
 
-        workNumber = "20240127" + (numberOfRecords + 1).toString().padStart(3, "0");
+      if (latestRecord) {
+        const lastWorkNumber = latestRecord.workNumber;
+        const lastNumber = parseInt(lastWorkNumber.substring(8)); // 從最後一個 workNumber 中取得數字部分
+        workNumber = `${timeFormat}${(lastNumber + 1).toString().padStart(3, "0")}`;
       } else {
-        workNumber = "20240127001";
+        workNumber = `${timeFormat}001`;
       }
-      console.log(OrderInfo);
       const ListSchema = new ListModel(
         workNumber,
         OrderInfo.moNumber,
         OrderInfo.location,
-        OrderInfo.productionLineCode,
-        OrderInfo.productionLineName,
+        OrderInfo.productionLineId,
         OrderInfo.productNumber,
         OrderInfo.productName,
         OrderInfo.productSpecification,
@@ -66,8 +63,7 @@ class StartWorkController {
         workNumber: ListSchema.workNumber,
         moNumber: ListSchema.moNumber,
         location: ListSchema.location,
-        productionLineCode: ListSchema.productionLineCode,
-        productionLineName: ListSchema.productionLineName,
+        productionLineId: ListSchema.productionLineId,
         productNumber: ListSchema.productNumber,
         productName: ListSchema.productName,
         productSpecification: ListSchema.productSpecification,

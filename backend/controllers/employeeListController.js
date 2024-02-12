@@ -2,9 +2,6 @@ const EmployeeList = require("../db/employeeList");
 const DataBase = require("../models/dbModel");
 const Employee = require("../db/employee");
 const SleepTime = require("../db/sleepTime");
-const { Op } = require("sequelize");
-const { sl } = require("date-fns/locale");
-const { en } = require("faker/lib/locales");
 
 class EmployeeListController {
   constructor() {
@@ -15,6 +12,8 @@ class EmployeeListController {
     this.allEmployeeStartWork = this.allEmployeeStartWork.bind(this);
     this.singleDeleteEmployee = this.singleDeleteEmployee.bind(this);
     this.singleCompleteEmployee = this.singleCompleteEmployee.bind(this);
+    this.now = new Date(); // 建立一個日期物件
+    this.taipeiTime = new Date(this.now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
   }
   async formattedEmployeeList(moNumber, workNumber) {
     const employeeList = await EmployeeList.findAll({
@@ -22,6 +21,7 @@ class EmployeeListController {
         moNumber: moNumber,
         workNumber: workNumber,
       },
+      order: [["employeeId", "ASC"]],
       include: [Employee], // 关联 Employee 模型
       raw: true, // 返回原始数据，不包含嵌套对象
     });
@@ -51,44 +51,37 @@ class EmployeeListController {
     }
 
     try {
-      const existingEmployee = await EmployeeList.findOne({
-        where: {
-          employeeId: employeeId,
-          [Op.or]: [{ moNumber: { [Op.ne]: null } }, { workNumber: { [Op.ne]: null } }],
-        },
-      });
+      const [existingEmployee] = await DataBase.query(
+        `
+        SELECT * FROM "employeeList"
+        JOIN "lists" ON "lists"."workNumber" = "employeeList"."workNumber"
+        WHERE "employeeList"."employeeId" = ${employeeId}
+        AND "lists"."status" != '完成'
+        AND "lists"."workNumber" != '${workNumber}'
 
-      if (existingEmployee) {
-        const employeeListData = existingEmployee.get({ plain: true });
+        AND ("employeeList"."moNumber" IS NOT NULL OR "employeeList"."workNumber" IS NOT NULL)
+      `
+      );
+      if (existingEmployee !== undefined) {
+        return res.json({
+          success: true,
+          response: "員工已存在於其他工單中",
+          employeeListData: await this.formattedEmployeeList(moNumber, workNumber),
+        });
+      } else {
         const [employeeList, created] = await EmployeeList.findOrCreate({
-          where: { employeeId: employeeId, moNumber: moNumber, workNumber: workNumber },
+          where: { employeeId: employeeId.toString(), moNumber: moNumber, workNumber: workNumber },
         });
 
         if (!created) {
-          return res.json({ success: false, response: "員工已存在" });
+          return res.json({ success: false, response: "員工已存在", employeeListData: await this.formattedEmployeeList(moNumber, workNumber) });
         } else {
-          return res.json({
-            success: true,
-            response: "員工已存在於其他工單中",
-            employeeListData: await this.formattedEmployeeList(moNumber, workNumber),
-          });
+          return res.json({ success: true, response: "員工已新增", employeeListData: await this.formattedEmployeeList(moNumber, workNumber) });
         }
-      }
-
-      const [employeeList, created] = await EmployeeList.findOrCreate({
-        where: { employeeId: employeeId, moNumber: moNumber, workNumber: workNumber },
-      });
-      if (!created) {
-        return res.json({ success: false, response: "員工已經存在" });
-      } else {
-        return res.json({
-          success: true,
-          employeeListData: await this.formattedEmployeeList(moNumber, workNumber),
-        });
       }
     } catch (error) {
       console.error("Error saving employeeList to database:", error);
-      return res.status(500).json({ error: "Internal Server Error" });
+      return res.json({ success: false, response: "找不到員工" });
     }
   }
   async getEmployeeList(req, res) {
@@ -115,11 +108,11 @@ class EmployeeListController {
 
       for (const item of employeeList) {
         if (!item.startTime) {
-          const now = new Date();
-          const hours = now.getHours().toString().padStart(2, "0"); // 補齊數字至兩位數，不足的話前面補 0
-          const minutes = now.getMinutes().toString().padStart(2, "0");
-          const seconds = now.getSeconds().toString().padStart(2, "0");
+          const hours = this.taipeiTime.getHours().toString().padStart(2, "0");
+          const minutes = this.taipeiTime.getMinutes().toString().padStart(2, "0");
+          const seconds = this.taipeiTime.getSeconds().toString().padStart(2, "0");
           const startTime = `${hours}:${minutes}:${seconds}`;
+
           item.startTime = startTime; // 將日期時間對象轉換為 ISO 字符串
           await item.save();
         }
@@ -128,6 +121,56 @@ class EmployeeListController {
     } catch (error) {
       console.error("Error updating start time for all employees:", error);
       return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+  async allEmployeeCompleteWork(workNumber) {
+    try {
+      const employeeList = await EmployeeList.findAll({
+        where: {
+          workNumber: workNumber,
+        },
+      });
+      if (!employeeList) {
+        return res.status(404).json({ error: "Employee not found" });
+      }
+      for (const item of employeeList) {
+        if (!item.endTime) {
+          const now = new Date();
+          const taipeiTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+          const endHours = taipeiTime.getHours().toString();
+          const endMinutes = taipeiTime.getMinutes().toString();
+          const endSeconds = taipeiTime.getSeconds().toString();
+          const endTime = `${endHours}:${endMinutes}:${endSeconds}`;
+          const [startHours, startMinutes, startSeconds] = item.startTime.split(":");
+
+          const sleepTimeInfo = await SleepTime.findOne({
+            where: {
+              id: 1,
+            },
+          });
+          let sleepTime = 0;
+
+          if (startHours < 12 && endHours >= 12 + sleepTimeInfo.values) {
+            sleepTime = sleepTimeInfo.values;
+          }
+
+          item.endTime = endTime;
+          item.sleepTime = sleepTime;
+
+          const startMilliseconds = parseInt(startHours) * 3600 + parseInt(startMinutes) * 60 + parseInt(startSeconds);
+          const endMilliseconds = parseInt(endHours) * 3600 + parseInt(endMinutes) * 60 + parseInt(endSeconds);
+
+          const diffSeconds = endMilliseconds - startMilliseconds;
+          const totalTimeHours = (diffSeconds / 3600).toFixed(2);
+          item.totalTime = totalTimeHours;
+
+          await item.save();
+        }
+      }
+
+      return employeeList;
+    } catch (error) {
+      console.error("Error updating start time for all employees:", error);
     }
   }
   async singleEmployeeStartWork(req, res) {
@@ -146,10 +189,9 @@ class EmployeeListController {
         return res.status(404).json({ error: "Employee not found" });
       }
       if (!employeeList.startTime) {
-        const now = new Date();
-        const hours = now.getHours().toString().padStart(2, "0");
-        const minutes = now.getMinutes().toString().padStart(2, "0");
-        const seconds = now.getSeconds().toString().padStart(2, "0");
+        const hours = this.taipeiTime.getHours().toString().padStart(2, "0");
+        const minutes = this.taipeiTime.getMinutes().toString().padStart(2, "0");
+        const seconds = this.taipeiTime.getSeconds().toString().padStart(2, "0");
         const startTime = `${hours}:${minutes}:${seconds}`;
         employeeList.startTime = startTime;
         await employeeList.save();
@@ -199,10 +241,9 @@ class EmployeeListController {
         return res.status(404).json({ error: "Employee not found" });
       }
       if (!employeeList.endTime) {
-        const end = new Date();
-        const endHours = end.getHours().toString();
-        const endMinutes = end.getMinutes().toString();
-        const endSeconds = end.getSeconds().toString();
+        const endHours = this.taipeiTime.getHours().toString();
+        const endMinutes = this.taipeiTime.getMinutes().toString();
+        const endSeconds = this.taipeiTime.getSeconds().toString();
         const endTime = `${endHours}:${endMinutes}:${endSeconds}`;
 
         // 解析 startTime

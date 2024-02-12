@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../models/dbModel");
+const ProductLine = require("./productLine");
 
 const Order = sequelize.define(
   "order",
@@ -12,14 +13,11 @@ const Order = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    productionLineCode: {
-      type: DataTypes.TEXT,
+    productionLineId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    productionLineName: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
+
     productNumber: {
       type: DataTypes.TEXT,
       allowNull: false,
@@ -49,8 +47,7 @@ const afterSyncHandler = async () => {
       {
         moNumber: "20240120001test",
         location: "生產一廠",
-        productionLineCode: "PRODUCT_LINE_001",
-        productionLineName: "產品一線",
+        productionLineId: 1,
         productNumber: "PRODUCT001",
         productName: "黑塑鏡盤(LH)",
         productSpecification: "(ABS)",
@@ -59,8 +56,7 @@ const afterSyncHandler = async () => {
       {
         moNumber: "20240120002test",
         location: "生產一廠",
-        productionLineCode: "PRODUCT_LINE_001",
-        productionLineName: "產品一線",
+        productionLineId: 1,
         productNumber: "PRODUCT002",
         productName: "白塑鏡盤(RH)",
         productSpecification: "(ABS)",
@@ -69,8 +65,7 @@ const afterSyncHandler = async () => {
       {
         moNumber: "20240120003test",
         location: "生產三廠",
-        productionLineCode: "PRODUCT_LINE_003",
-        productionLineName: "產品三線",
+        productionLineId: 3,
         productNumber: "PRODUCT003",
         productName: "紅塑鏡盤(LH)",
         productSpecification: "(ABS)",
@@ -79,8 +74,7 @@ const afterSyncHandler = async () => {
       {
         moNumber: "20240120004test",
         location: "生產四廠",
-        productionLineCode: "PRODUCT_LINE_004",
-        productionLineName: "產品四線",
+        productionLineId: 4,
         productNumber: "PRODUCT004",
         productName: "藍塑鏡盤(RH)",
         productSpecification: "(PC)",
@@ -89,8 +83,7 @@ const afterSyncHandler = async () => {
       {
         moNumber: "20240120005test",
         location: "生產五廠",
-        productionLineCode: "PRODUCT_LINE_005",
-        productionLineName: "產品五線",
+        productionLineId: 5,
         productNumber: "PRODUCT005",
         productName: "綠塑鏡盤(LH)",
         productSpecification: "(PP)",
@@ -99,8 +92,7 @@ const afterSyncHandler = async () => {
       {
         moNumber: "20240120006test",
         location: "生產六廠",
-        productionLineCode: "PRODUCT_LINE_006",
-        productionLineName: "產品六線",
+        productionLineId: 6,
         productNumber: "PRODUCT006",
         productName: "黃塑鏡盤(RH)",
         productSpecification: "(PET)",
@@ -122,6 +114,7 @@ const afterSyncHandler = async () => {
     console.error("Error while creating Order:", error);
   }
 };
+Order.belongsTo(ProductLine, { foreignKey: "productionLineId" });
 
 Order.afterSync(afterSyncHandler);
 module.exports = Order;

@@ -7,7 +7,7 @@ const SleepTimeController = require("../controllers/sleepTimeController");
 const ListController = require("../controllers/listController");
 const employeeListController = require("../controllers/employeeListController");
 const StartWorkController = require("../controllers/startWorkController");
-
+const ProductLineController = require("../controllers/productLineController");
 const useAsync = (middleware) => {
   return (req, res, next) => {
     Promise.resolve(middleware(req, res, next)).catch(next);
@@ -34,6 +34,8 @@ router.post("/sleeps", useAsync(SleepTimeController.setSleepTime));
 router.get("/lists", useAsync(ListController.getList));
 router.get("/lists/:id", useAsync(ListController.getListInfo));
 router.delete("/lists/:id", useAsync(ListController.deleteList));
+router.post("/lists/:id", useAsync(ListController.updateListInfo));
+
 // EmployeeList routes
 router.get("/employeeLists/:moNumber/:workNumber", useAsync(employeeListController.getEmployeeList));
 router.post("/employeeLists/:employeeId/:moNumber/:workNumber", useAsync(employeeListController.addEmployeeList));
@@ -42,6 +44,7 @@ router.post("/employeeListSingle/:employeeId/:moNumber/:workNumber", useAsync(em
 router.delete("/employeeListSingle/:employeeId/:moNumber/:workNumber", useAsync(employeeListController.singleDeleteEmployee));
 router.put("/employeeListSingle/:employeeId/:moNumber/:workNumber", useAsync(employeeListController.singleCompleteEmployee));
 // StartWork routes
-
 router.post("/startWork", useAsync(StartWorkController.insertOrder));
+// ProductLine routes
+router.get("/productLine", useAsync(ProductLineController.getProductLine));
 module.exports = router;

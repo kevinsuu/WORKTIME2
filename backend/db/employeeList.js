@@ -1,6 +1,8 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../models/dbModel");
 const Employee = require("./employee"); // 导入 Employee 模型
+const List = require("./list"); // 导入 Employee 模型
+
 const faker = require("faker");
 
 const EmployeeList = sequelize.define(
@@ -145,5 +147,6 @@ const afterSyncHandler = async () => {
   }
 };
 EmployeeList.belongsTo(Employee, { foreignKey: "employeeId" });
+
 EmployeeList.afterSync(afterSyncHandler);
 module.exports = EmployeeList;
