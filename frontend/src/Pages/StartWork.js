@@ -52,7 +52,6 @@ const SetStartWork = () => {
         const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/api/orders");
         if (response.ok) {
           const data = await response.json();
-          console.log(data.ordersInfo);
           setWorkOrders(data.ordersInfo); // 更新工单列表数据
         } else {
           console.error("Error fetching work orders:", response.statusText);
@@ -84,8 +83,6 @@ const SetStartWork = () => {
       if (response.ok) {
         const responseData = await response.json();
         const workNumber = responseData.newListRecord.workNumber;
-        console.log(responseData);
-        console.log(workNumber);
 
         setSnackbarStatus("success");
         setSnackbarMessage("報工成功");

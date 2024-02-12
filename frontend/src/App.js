@@ -10,6 +10,8 @@ import DataExport from "./Pages/DataExport";
 import SetPassword from "./Pages/SetPassword";
 import WorkPage from "./Pages/WorkPage";
 import Grid from "@mui/material/Grid";
+import "./Pages/fonts.css"; // Import the CSS file with font-face rule
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Import Routes
 
 function App() {

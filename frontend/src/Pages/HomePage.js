@@ -45,7 +45,6 @@ const HomePage = () => {
         const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/api/lists");
         if (response.ok) {
           const data = await response.json();
-          console.log(data.listsInfo);
           setWorkOrders(data.listsInfo); // 更新工单列表数据
         } else {
           console.error("Error fetching work orders:", response.statusText);
@@ -100,6 +99,7 @@ const HomePage = () => {
               <TableRow style={{ backgroundColor: "#BBAB8C" }}>
                 <StyledTableCell>報工號碼</StyledTableCell>
                 <StyledTableCell>製令單號</StyledTableCell>
+                <StyledTableCell>報工狀態</StyledTableCell>
                 <StyledTableCell>廠別</StyledTableCell>
                 <StyledTableCell>生產線代號</StyledTableCell>
                 <StyledTableCell>生產線名稱</StyledTableCell>
@@ -113,8 +113,8 @@ const HomePage = () => {
               {workOrders.slice(startIndex, endIndex).map((order) => (
                 <TableRow key={order.workNumber} onClick={() => handleRowClick(order.workNumber)} style={{ cursor: "pointer" }}>
                   <StyledTableCell>{order.workNumber}</StyledTableCell>
-
                   <StyledTableCell>{order.moNumber}</StyledTableCell>
+                  <StyledTableCell>{order.status}</StyledTableCell>
                   <StyledTableCell>{order.location}</StyledTableCell>
                   <StyledTableCell>{order.productionLineCode}</StyledTableCell>
                   <StyledTableCell>{order.productionLineName}</StyledTableCell>

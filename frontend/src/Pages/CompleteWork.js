@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import "./fonts.css"; // Import the CSS file with font-face rule
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import TextField from "@mui/material/TextField";
+import SnackbarAlert from "../Component/SnackbarAlert";
 
 import {
   styled,
@@ -18,6 +20,19 @@ import {
   Paper,
   Pagination,
 } from "@mui/material";
+import {
+  FormControl,
+  MenuItem,
+  Select,
+  CircularProgress,
+  InputLabel,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+
 const StyledTableContainer = styled(TableContainer)({
   marginTop: 2,
 });
@@ -34,14 +49,84 @@ const CompleteWork = () => {
   const [workOrders, setWorkOrders] = useState([]); // 新增状态来存储工单列表数据
   const [currentPage, setCurrentPage] = useState(1); // 用於跟蹤當前頁面
   const itemsPerPage = 11;
-  const [StartWorkTime, CompleteWorkTime] = useState("");
+  const [openCompleteWorkDialog, setCompleteWorkDialog] = useState(false);
+  const [selectedProductLine, setSelectedProductLine] = useState("");
+  const [completeWorkTime, setCompleteWorkTime] = useState("");
+  const [workNumber, setWorkNumber] = useState("");
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
+  const [isSnackbarMessage, setSnackbarMessage] = useState("");
+  const [isSnackbarStatus, setSnackbarStatus] = useState("");
+  const [productLines, setProductLines] = useState([]);
+  const [remarks, setRemarks] = useState("");
+  const [completedQuantity, setCompletedQuantity] = useState("");
+  const [workInfo, setWorkInfo] = useState(null);
+
+  useEffect(() => {
+    handleProductLine();
+  }, []);
+  const handleCompleteCheckSubmit = async () => {
+    // 完工工單確認
+    if (completeWorkTime == "") {
+      setSnackbarOpen(true);
+      setSnackbarMessage("沒有輸入工號");
+      setSnackbarStatus("error");
+      setCompleteWorkDialog(false);
+    } else {
+      try {
+        const requestBody = {
+          remark: remarks,
+          completedQuantity: completedQuantity,
+          status: "完成",
+        };
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/lists/${workNumber}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        });
+        const responseData = await response.json();
+        if (response.ok) {
+          setCompleteWorkDialog(false);
+          setSnackbarOpen(true);
+          setSnackbarMessage("工單已完成");
+          setSnackbarStatus("success");
+          setTimeout(() => {
+            navigate("/");
+          }, 500);
+        } else {
+          setSnackbarOpen(true);
+          setSnackbarMessage(responseData.respone);
+          setSnackbarStatus("error");
+        }
+      } catch (error) {
+        console.error("Error fetching work info:", error);
+      }
+    }
+  };
+  const handleProductLine = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/productLine`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const responseData = await response.json();
+
+        setProductLines(responseData);
+      }
+    } catch (error) {
+      console.error("Error fetching work info:", error);
+    }
+  };
   useEffect(() => {
     const fetchWorkOrders = async () => {
       try {
         const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/api/lists");
         if (response.ok) {
           const data = await response.json();
-          console.log(data.listsInfo);
           setWorkOrders(data.listsInfo); // 更新工单列表数据
         } else {
           console.error("Error fetching work orders:", response.statusText);
@@ -53,25 +138,30 @@ const CompleteWork = () => {
 
     fetchWorkOrders();
   }, []);
-
-  const handleWorkReportSubmit = async () => {
+  const fetchWorkInfo = async () => {
     try {
-      const requestData = {
-        time: StartWorkTime,
-      };
-      const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/api/work", {
-        method: "POST",
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/lists/${workNumber}`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestData), // 将请求数据转换为 JSON 字符串
       });
+
       if (response.ok) {
-        // 跳轉化面
+        const responseData = await response.json();
+
+        setWorkInfo(responseData.listsInfo);
+        const productionLineId = responseData.listsInfo[0].productionLineId;
+        setSelectedProductLine(productionLineId);
       }
     } catch (error) {
-      console.error("Error during fetch:", error);
+      console.error("Error fetching work info:", error);
     }
+  };
+  const handleWorkReportSubmit = async () => {
+    setWorkNumber(completeWorkTime);
+    await fetchWorkInfo();
+    setCompleteWorkDialog(true);
   };
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
@@ -98,9 +188,9 @@ const CompleteWork = () => {
       </Typography>
       <Box>
         <OutlinedInput
-          placeholder="請輸入工單號"
-          value={StartWorkTime}
-          onChange={(e) => CompleteWorkTime(e.target.value)}
+          placeholder="請輸入報工號碼"
+          value={completeWorkTime}
+          onChange={(e) => setCompleteWorkTime(e.target.value)}
           sx={{
             width: "300px",
             backgroundColor: "white", // Set the background color to white for the input
@@ -169,7 +259,61 @@ const CompleteWork = () => {
           marginBottom: "12px", // 與底部的距離
         }}
       >
+        <Dialog open={openCompleteWorkDialog} onClose={() => setCompleteWorkDialog(false)}>
+          <DialogTitle>完成工單資訊</DialogTitle>
+          <DialogContent>
+            <DialogContentText sx={{ marginTop: "8px", fontWeight: "bold" }}></DialogContentText>
+
+            <FormControl fullWidth variant="outlined" sx={{ marginTop: "8px" }}>
+              <InputLabel id="product-line-label">生產線</InputLabel>
+              <Select
+                labelId="product-line-label"
+                value={selectedProductLine}
+                onChange={(e) => setSelectedProductLine(e.target.value)}
+                label="生產線"
+              >
+                {productLines.map((productLine) => (
+                  <MenuItem key={productLine.id} value={productLine.id}>
+                    {productLine.productionLineName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="完成數量"
+              sx={{ marginTop: "8px" }}
+              variant="outlined"
+              value={completedQuantity}
+              onChange={(e) => setCompletedQuantity(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              label="備註"
+              sx={{ marginTop: "8px" }}
+              variant="outlined"
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCompleteWorkDialog(false)} color="primary">
+              取消
+            </Button>
+            <Button
+              onClick={() => {
+                // 在這裡執行確認操作
+                handleCompleteCheckSubmit();
+              }}
+              color="primary"
+              autoFocus
+            >
+              確定
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color="primary" size="large" />
+        <SnackbarAlert open={isSnackbarOpen} message={isSnackbarMessage} status={isSnackbarStatus} handleClose={() => setSnackbarOpen(false)} />
       </Box>
     </Box>
   );

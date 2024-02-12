@@ -14,8 +14,6 @@ const SetPassword = () => {
 
   const handleWorkReportSubmit = async () => {
     try {
-      console.log(homPagePassword);
-      console.log(orderDelPassword);
       const requestData = [
         {
           values: orderDelPassword,

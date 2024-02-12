@@ -5,7 +5,18 @@ import "./fonts.css"; // Import the CSS file with font-face rule
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Tooltip } from "@mui/material";
-import { Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from "@mui/material";
+import {
+  FormControl,
+  MenuItem,
+  Select,
+  CircularProgress,
+  InputLabel,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -14,7 +25,7 @@ import StartIcon from "@mui/icons-material/Start";
 import SnackbarAlert from "../Component/SnackbarAlert";
 import TableCellWithText from "../Component/TableCellWithText";
 
-import { styled, Box, Typography, Button, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Pagination } from "@mui/material";
+import { styled, Box, Typography, Button, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper } from "@mui/material";
 const StyledTableContainer = styled(TableContainer)({
   marginTop: 2,
 });
@@ -47,10 +58,22 @@ const WorkPage = () => {
   const [moNumber, setMoNumber] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [openDeleteEmployeeDialog, setOpenDeleteEmployeeDialog] = useState(false);
+  const [openCompleteWorkDialog, setCompleteWorkDialog] = useState(false);
+  const [selectedProductLine, setSelectedProductLine] = useState("");
+  const [remarks, setRemarks] = useState("");
+  const [completedQuantity, setCompletedQuantity] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [employeeId, setEmployeeId] = useState("");
 
   const handleDeleteWorkButton = () => {
     setOpenDeleteDialog(true);
   };
+  const [productLines, setProductLines] = useState([]);
+
+  useEffect(() => {
+    handleProductLine();
+  }, []);
+
   useEffect(() => {
     fetchWorkInfo();
   }, [workNumber]);
@@ -59,9 +82,11 @@ const WorkPage = () => {
       fetchEmployeeInfo();
     }
   }, [moNumber]);
+
   const handleDeleteConfirm = async () => {
     setOpenDeleteDialog(false);
     setSnackbarOpen(true);
+    setLoading(true);
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/lists/${workNumber}`, {
@@ -75,6 +100,8 @@ const WorkPage = () => {
         setSnackbarMessage("已刪除工單");
         setSnackbarStatus("success");
         setTimeout(() => {
+          setLoading(false);
+
           navigate("/");
         }, 500);
       }
@@ -86,27 +113,55 @@ const WorkPage = () => {
     setOpenDeleteDialog(false);
   };
 
-  const handleCompleteSubmit = async (employeeId) => {
-    // 完工工單
-    console.log(123);
+  const handleCompleteSubmit = async () => {
+    setCompleteWorkDialog(true);
   };
+  const handleCompleteCheckSubmit = async () => {
+    // 完工工單確認
+    try {
+      setLoading(true);
 
+      const requestBody = {
+        remark: remarks,
+        completedQuantity: completedQuantity,
+        status: "完成",
+      };
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/lists/${workNumber}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+      const responseData = await response.json();
+
+      if (response.ok) {
+        setCompleteWorkDialog(false);
+        setSnackbarOpen(true);
+        setSnackbarMessage("工單已完成");
+        setSnackbarStatus("success");
+        setTimeout(() => {
+          setLoading(false);
+
+          navigate("/");
+        }, 500);
+      } else {
+        setSnackbarOpen(true);
+        setSnackbarMessage(responseData.respone);
+        setSnackbarStatus("error");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching work info:", error);
+    }
+  };
   const handleStartSubmit = async () => {
     setOpenDialog(true);
   };
-  const handleSingleSubmit = async (employeeId, status) => {
-    let sendMethod = null;
-    if (status === "DELETE") {
-      sendMethod = "DELETE";
-    } else if (status === "ADD") {
-      sendMethod = "POST";
-    } else {
-      sendMethod = "PUT";
-    }
-
+  const handleProductLine = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/employeeListSingle/${employeeId}/${moNumber}/${workNumber}`, {
-        method: sendMethod,
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/productLine`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
@@ -114,20 +169,81 @@ const WorkPage = () => {
 
       if (response.ok) {
         const responseData = await response.json();
-        if (responseData.success === true) {
-          setEmployeeInfo(responseData.employeeListsInfo);
-          setSnackbarOpen(true);
-          setSnackbarMessage(responseData.response);
-          setSnackbarStatus("success");
-        } else {
-          setSnackbarOpen(true);
-          setSnackbarMessage(responseData.response);
-          setSnackbarStatus("error");
+        setProductLines(responseData);
+      }
+    } catch (error) {
+      console.error("Error fetching work info:", error);
+    }
+  };
+  const handleSingleSubmit = async (employeeId, status) => {
+    setEmployeeId(employeeId);
+    let sendMethod = null;
+    if (status === "DELETE") {
+      sendMethod = "DELETE";
+
+      setOpenDeleteEmployeeDialog(true);
+    } else if (status === "ADD") {
+      sendMethod = "POST";
+    } else {
+      sendMethod = "PUT";
+    }
+    try {
+      if (sendMethod !== "DELETE") {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/employeeListSingle/${employeeId}/${moNumber}/${workNumber}`, {
+          method: sendMethod,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const responseData = await response.json();
+
+        if (response.ok) {
+          if (responseData.success === true) {
+            setEmployeeInfo(responseData.employeeListsInfo);
+            setSnackbarOpen(true);
+            setSnackbarMessage(responseData.response);
+            setSnackbarStatus("success");
+          } else {
+            setSnackbarOpen(true);
+            setSnackbarMessage(responseData.response);
+            setSnackbarStatus("error");
+          }
         }
       }
     } catch (error) {
       console.error("Error fetching employee info:", error);
     }
+  };
+  const handleDeleteEmployeeConfirmation = async (confirmed) => {
+    if (confirmed) {
+      // 執行刪除操作
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/employeeListSingle/${employeeId}/${moNumber}/${workNumber}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const responseData = await response.json();
+          if (responseData.success === true) {
+            setEmployeeInfo(responseData.employeeListsInfo);
+            setSnackbarOpen(true);
+            setSnackbarMessage(responseData.response);
+            setSnackbarStatus("success");
+          } else {
+            setSnackbarOpen(true);
+            setSnackbarMessage(responseData.response);
+            setSnackbarStatus("error");
+          }
+        }
+        setEmployeeId("");
+      } catch (error) {
+        console.error("Error fetching employee info:", error);
+      }
+    }
+    setOpenDeleteEmployeeDialog(false); // 關閉刪除確認對話框
   };
   const handleConfirmation = async (confirmed) => {
     if (confirmed) {
@@ -173,6 +289,9 @@ const WorkPage = () => {
       if (response.ok) {
         const responseData = await response.json();
         if (responseData.success === true) {
+          setSnackbarOpen(true);
+          setSnackbarMessage(responseData.response);
+          setSnackbarStatus("success");
           setEmployeeInfo(responseData.employeeListData);
         } else {
           setSnackbarOpen(true);
@@ -215,6 +334,8 @@ const WorkPage = () => {
         const responseData = await response.json();
         setWorkInfo(responseData.listsInfo);
         setWorkDataLoaded(true); // 標記數據已加載完成
+        setSelectedProductLine(responseData.listsInfo.productionLineId);
+
         if (responseData.listsInfo && responseData.listsInfo.moNumber) {
           setMoNumber(responseData.listsInfo.moNumber);
         }
@@ -238,12 +359,27 @@ const WorkPage = () => {
       </Typography>
       <Box
         sx={{
+          position: "absolute",
+          top: "50%",
+          left: "60%",
+          transform: "translate(-50%, -50%)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+
+          zIndex: 9999, // 設定 zIndex 以確保 CircularProgress 顯示在最上層
+          visibility: loading ? "visible" : "hidden", // 根據 loading 狀態調整顯示/隱藏
+        }}
+      >
+        <CircularProgress />
+      </Box>
+      <Box
+        sx={{
           padding: "12px",
           display: "flex",
           flexDirection: "column",
           height: "77vh",
           width: "80%",
-
           alignItems: "center",
           position: "relative", // 设置相对定位
         }}
@@ -384,8 +520,7 @@ const WorkPage = () => {
             </StyledTable>
             <Box
               sx={{
-                height: "100%", // 設置固定高度
-                maxHeight: "500px", // 設置固定高度
+                height: "450px", // 設置固定高度
                 overflowY: "auto", // 設置垂直滾動
                 width: "100%", // 確保寬度擴展至父元素的寬度
               }}
@@ -456,6 +591,73 @@ const WorkPage = () => {
               取消
             </Button>
             <Button onClick={() => handleConfirmation(true)} color="primary" autoFocus>
+              確定
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog open={openDeleteEmployeeDialog} onClose={() => setCompleteWorkDialog(false)}>
+          <DialogTitle>刪除員工</DialogTitle>
+          <DialogContent>
+            <DialogContentText>確定要刪除此員工嗎？</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDeleteEmployeeDialog(false)} color="primary">
+              取消
+            </Button>
+            <Button onClick={() => handleDeleteEmployeeConfirmation(true)} color="primary" autoFocus>
+              確定
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog open={openCompleteWorkDialog} onClose={() => setCompleteWorkDialog(false)}>
+          <DialogTitle>完成工單資訊</DialogTitle>
+          <DialogContent>
+            <DialogContentText sx={{ marginTop: "8px", fontWeight: "bold" }}></DialogContentText>
+
+            <FormControl fullWidth variant="outlined" sx={{ marginTop: "8px" }}>
+              <InputLabel id="product-line-label">生產線</InputLabel>
+              <Select
+                labelId="product-line-label"
+                value={selectedProductLine}
+                onChange={(e) => setSelectedProductLine(e.target.value)}
+                label="生產線"
+              >
+                {productLines.map((productLine) => (
+                  <MenuItem key={productLine.id} value={productLine.id}>
+                    {productLine.productionLineName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="完成數量"
+              sx={{ marginTop: "8px" }}
+              variant="outlined"
+              value={completedQuantity}
+              onChange={(e) => setCompletedQuantity(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              label="備註"
+              sx={{ marginTop: "8px" }}
+              variant="outlined"
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCompleteWorkDialog(false)} color="primary">
+              取消
+            </Button>
+            <Button
+              onClick={() => {
+                // 在這裡執行確認操作
+                handleCompleteCheckSubmit();
+              }}
+              color="primary"
+              autoFocus
+            >
               確定
             </Button>
           </DialogActions>
