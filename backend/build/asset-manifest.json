@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/static/css/main.6cdf29cf.css",
-    "main.js": "/static/js/main.33ee3d15.js",
+    "main.js": "/static/js/main.d3f42681.js",
     "static/media/jf-openhuninn-2.0.ttf": "/static/media/jf-openhuninn-2.0.fd854b9ac28f235f53a5.ttf",
     "index.html": "/index.html",
     "main.6cdf29cf.css.map": "/static/css/main.6cdf29cf.css.map",
-    "main.33ee3d15.js.map": "/static/js/main.33ee3d15.js.map"
+    "main.d3f42681.js.map": "/static/js/main.d3f42681.js.map"
   },
   "entrypoints": [
     "static/css/main.6cdf29cf.css",
-    "static/js/main.33ee3d15.js"
+    "static/js/main.d3f42681.js"
   ]
 }

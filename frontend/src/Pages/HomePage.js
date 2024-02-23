@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./fonts.css"; // Import the CSS file with font-face rule
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import RefreshIcon from "@mui/icons-material/Refresh"; // Import Refresh icon from MUI
 
 import {
   styled,
@@ -15,6 +16,8 @@ import {
   TableCell,
   Paper,
   Pagination,
+  TableSortLabel,
+  OutlinedInput,
 } from "@mui/material";
 const StyledTableContainer = styled(TableContainer)({
   marginTop: 2,
@@ -34,9 +37,16 @@ const TableRow = styled(MUITableRow)({
 });
 
 const HomePage = () => {
-  const [workOrders, setWorkOrders] = useState([]); // 新增状态来存储工单列表数据
+  const [workOrders, setWorkOrders] = useState([]); // 新增狀態來存儲工單列表數據
   const [currentPage, setCurrentPage] = useState(1); // 用於跟蹤當前頁面
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" }); // 新增排序配置狀態
   const itemsPerPage = 12; // Updated to display 13 items per page
+  const totalItems = workOrders.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const [searchInput, setSearchInput] = useState(""); // 新增搜尋輸入狀態
+  const [reset, setReset] = useState(false); // 新增重置狀態
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,11 +74,75 @@ const HomePage = () => {
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
   };
+  const requestSort = (key) => {
+    let direction = "desc";
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === "desc") {
+      direction = "asc";
+    }
+    console.log(key, direction);
+    setSortConfig({ key, direction });
+  };
+  const handleReset = async () => {
+    setReset(false); // 点击重置按钮后，将重置状态设置为 false
+    setSearchInput(""); // 清空搜索输入框内容
+    const response = await fetch(process.env.REACT_APP_API_BASE_URL + `/api/lists`);
 
-  const totalItems = workOrders.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+    if (response.ok) {
+      const data = await response.json();
+      setWorkOrders(data.listsInfo);
+    } else {
+      console.error("Error fetching work orders:", response.statusText);
+    }
+  };
+  const handleWorkSearchSubmit = async () => {
+    try {
+      let response;
+      if (searchInput === "") {
+        response = await fetch(process.env.REACT_APP_API_BASE_URL + `/api/lists`);
+      } else {
+        response = await fetch(process.env.REACT_APP_API_BASE_URL + `/api/searchLists/${searchInput}`);
+        setReset(true);
+      }
+      if (response.ok) {
+        const data = await response.json();
+        if (data.listsInfo) {
+          setWorkOrders(data.listsInfo);
+        } else {
+          setWorkOrders([]);
+        }
+      }
+    } catch (error) {
+      console.error("Error during fetch:", error);
+    }
+    setCurrentPage(1);
+  };
+
+  const sortedWorkOrders = useMemo(() => {
+    let sortedOrders = [...workOrders];
+    if (sortConfig.key !== null) {
+      sortedOrders.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortedOrders;
+  }, [workOrders, sortConfig]);
+  const createSortHeader = (key, label) => (
+    <StyledTableCell>
+      <TableSortLabel
+        active={sortConfig.key === key}
+        direction={sortConfig.key === key ? sortConfig.direction : "asc"}
+        onClick={() => requestSort(key)}
+      >
+        {label}
+      </TableSortLabel>
+    </StyledTableCell>
+  );
 
   return (
     <Box
@@ -83,13 +157,31 @@ const HomePage = () => {
       <Typography variant="h5" sx={{ marginBottom: "20px", color: "#503C3C", fontWeight: "bold" }}>
         首頁
       </Typography>
+      <Box>
+        <OutlinedInput
+          placeholder="請輸入搜尋資訊 e.g. 製令單號、報工號"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          sx={{
+            width: "350px",
+            backgroundColor: "white", // Set the background color to white for the input
+          }}
+        />
+        <Button variant="contained" color="primary" onClick={handleWorkSearchSubmit} sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}>
+          完成
+        </Button>
+        {reset && (
+          <Button variant="outlined" onClick={handleReset} sx={{ marginLeft: "20px", backgroundColor: "#503C3C", color: "white" }}>
+            <RefreshIcon />
+          </Button>
+        )}
+      </Box>
       <Box
         sx={{
           padding: "12px",
           display: "flex",
           flexDirection: "column",
           height: "77vh",
-          width: "80%",
           alignItems: "center",
         }}
       >
@@ -97,20 +189,20 @@ const HomePage = () => {
           <StyledTable>
             <TableHead>
               <TableRow style={{ backgroundColor: "#BBAB8C" }}>
-                <StyledTableCell>報工號碼</StyledTableCell>
-                <StyledTableCell>製令單號</StyledTableCell>
-                <StyledTableCell>報工狀態</StyledTableCell>
-                <StyledTableCell>廠別</StyledTableCell>
-                <StyledTableCell>生產線代號</StyledTableCell>
-                <StyledTableCell>生產線名稱</StyledTableCell>
-                <StyledTableCell>產品編號</StyledTableCell>
-                <StyledTableCell>產品名稱</StyledTableCell>
-                <StyledTableCell>產品規格</StyledTableCell>
-                <StyledTableCell>預計生產數量</StyledTableCell>
+                {createSortHeader("workNumber", "報工號碼")}
+                {createSortHeader("moNumber", "製令單號")}
+                {createSortHeader("status", "報工狀態")}
+                {createSortHeader("location", "廠別")}
+                {createSortHeader("productionLineCode", "生產線代號")}
+                {createSortHeader("productionLineName", "生產線名稱")}
+                {createSortHeader("productNumber", "產品編號")}
+                {createSortHeader("productName", "產品名稱")}
+                {createSortHeader("productSpecification", "產品規格")}
+                {createSortHeader("expectedProductionQuantity", "預計生產數量")}
               </TableRow>
             </TableHead>
             <TableBody>
-              {workOrders.slice(startIndex, endIndex).map((order) => (
+              {sortedWorkOrders.slice(startIndex, endIndex).map((order) => (
                 <TableRow key={order.workNumber} onClick={() => handleRowClick(order.workNumber)} style={{ cursor: "pointer" }}>
                   <StyledTableCell>{order.workNumber}</StyledTableCell>
                   <StyledTableCell>{order.moNumber}</StyledTableCell>

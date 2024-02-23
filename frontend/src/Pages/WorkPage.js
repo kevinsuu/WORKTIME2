@@ -147,7 +147,7 @@ const WorkPage = () => {
         }, 500);
       } else {
         setSnackbarOpen(true);
-        setSnackbarMessage(responseData.respone);
+        setSnackbarMessage(responseData.response);
         setSnackbarStatus("error");
         setLoading(false);
       }
@@ -335,7 +335,6 @@ const WorkPage = () => {
         setWorkInfo(responseData.listsInfo);
         setWorkDataLoaded(true); // 標記數據已加載完成
         setSelectedProductLine(responseData.listsInfo.productionLineId);
-
         if (responseData.listsInfo && responseData.listsInfo.moNumber) {
           setMoNumber(responseData.listsInfo.moNumber);
         }

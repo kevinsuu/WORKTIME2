@@ -10,11 +10,52 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 
 const DataExport = () => {
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  const defaultDate = new Date(2020, 0, 1);
+  const toDayDate = new Date();
+  const [startTime, setStartTime] = useState(defaultDate);
+  const [endTime, setEndTime] = useState(toDayDate);
+  const handleWorkReportSubmit = async () => {
+    const requestBody = {
+      startTime: startTime.toISOString(), // 将日期转换为 ISO 格式的字符串
+      endTime: endTime.toISOString(),
+    };
 
-  const handleWorkReportSubmit = () => {
-    console.log("Submitting work report:", startTime, endTime);
+    try {
+      const response = await fetch(process.env.REACT_APP_API_BASE_URL + "/api/exportLists", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        // 创建一个临时URL
+        const url = URL.createObjectURL(blob);
+
+        const currentDate = new Date();
+        const fileName = `報工資料_${currentDate.getFullYear()}${currentDate.getMonth() + 1}${currentDate.getDate()}.xlsx`;
+
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = fileName;
+
+        // 将链接添加到DOM中并模拟点击
+        document.body.appendChild(a);
+        a.click();
+
+        // 释放URL对象
+        URL.revokeObjectURL(url);
+
+        console.log("Export successful");
+      } else {
+        console.error("Export failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during export:", error);
+    }
   };
 
   const navigate = useNavigate();

@@ -37,7 +37,7 @@ class SleepTimeController {
       if (numOfAffectedRows > 0) {
         const updatedSleepTimeData = updatedSleepTimes.map((SleepTimeInstance) => SleepTimeInstance.get({ plain: true }));
 
-        return res.json({ success: true, respone: updatedSleepTimeData });
+        return res.json({ success: true, response: updatedSleepTimeData });
       } else {
         console.log(`No SleepTime record found with id 1.`);
         return res.status(404).json({ error: "SleepTime not found" });

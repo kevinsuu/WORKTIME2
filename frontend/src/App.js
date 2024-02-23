@@ -9,6 +9,7 @@ import DataMaintain from "./Pages/DataMaintain";
 import DataExport from "./Pages/DataExport";
 import SetPassword from "./Pages/SetPassword";
 import WorkPage from "./Pages/WorkPage";
+import EditWorkPage from "./Pages/EditWorkPage";
 import Grid from "@mui/material/Grid";
 import "./Pages/fonts.css"; // Import the CSS file with font-face rule
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="/setPassword" element={<SetPassword />} />
             <Route path="/setSleep" element={<SetSleep />} />
             <Route path="/work/:workNumber" element={<WorkPage />} />
+            <Route path="/editWork/:workNumber" element={<EditWorkPage />} />
           </Routes>
         </Grid>
       </Grid>

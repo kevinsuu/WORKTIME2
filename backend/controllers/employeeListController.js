@@ -44,7 +44,6 @@ class EmployeeListController {
     const employeeId = req.params.employeeId;
     const moNumber = req.params.moNumber;
     const workNumber = req.params.workNumber;
-    console.log(moNumber, workNumber, employeeId);
     if (!employeeId) {
       console.error("employeeId is not set. Set a employeeId before saving to the database.");
       return res.status(400).json({ error: "Bad Request" });
@@ -55,13 +54,17 @@ class EmployeeListController {
         `
         SELECT * FROM "employeeList"
         JOIN "lists" ON "lists"."workNumber" = "employeeList"."workNumber"
-        WHERE "employeeList"."employeeId" = ${employeeId}
+        WHERE "employeeList"."employeeId" = :employeeId
         AND "lists"."status" != '完成'
-        AND "lists"."workNumber" != '${workNumber}'
-
+        AND "lists"."workNumber" != :workNumber
         AND ("employeeList"."moNumber" IS NOT NULL OR "employeeList"."workNumber" IS NOT NULL)
-      `
+        `,
+        {
+          employeeId,
+          workNumber,
+        }
       );
+
       if (existingEmployee !== undefined) {
         return res.json({
           success: true,
@@ -272,7 +275,6 @@ class EmployeeListController {
         const diffSeconds = endMilliseconds - startMilliseconds;
         const totalTimeHours = (diffSeconds / 3600).toFixed(2);
         employeeList.totalTime = totalTimeHours;
-
         await employeeList.save();
       }
 

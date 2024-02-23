@@ -37,7 +37,7 @@ class PasswordController {
       }
 
       // Move res.json outside the loop
-      return res.json({ success: true, respone: updatedPasswordDataArray });
+      return res.json({ success: true, response: updatedPasswordDataArray });
     } catch (error) {
       console.error("Error saving password to database:", error);
       return res.status(500).json({ error: "Internal Server Error" });

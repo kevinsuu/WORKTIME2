@@ -11,11 +11,11 @@ class DataBase {
   constructor() {
     this.sequelize = sequelize;
   }
-
-  async query(queryText) {
+  async query(queryText, values) {
     try {
       const result = await this.sequelize.query(queryText, {
         type: this.sequelize.QueryTypes.SELECT,
+        replacements: values, // 将值作为参数传递
       });
       return result;
     } catch (error) {

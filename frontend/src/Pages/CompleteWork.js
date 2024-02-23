@@ -96,7 +96,7 @@ const CompleteWork = () => {
           }, 500);
         } else {
           setSnackbarOpen(true);
-          setSnackbarMessage(responseData.respone);
+          setSnackbarMessage(responseData.response);
           setSnackbarStatus("error");
         }
       } catch (error) {
