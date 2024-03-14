@@ -4,6 +4,7 @@ import "./fonts.css"; // Import the CSS file with font-face rule
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import TextField from "@mui/material/TextField";
 import SnackbarAlert from "../Component/SnackbarAlert";
+import Grid from "@mui/material/Grid";
 
 import {
   styled,
@@ -33,9 +34,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-const StyledTableContainer = styled(TableContainer)({
-  marginTop: 2,
-});
+const StyledTableContainer = styled(TableContainer)({});
 
 const StyledTable = styled(Table)({
   minWidth: 650, // 调整表格的最小宽度
@@ -200,57 +199,53 @@ const CompleteWork = () => {
           完成
         </Button>
       </Box>
-      <Box
-        sx={{
-          padding: "12px",
-          display: "flex",
-          flexDirection: "column",
-          height: "71vh",
+      <Grid container spacing={2} sx={{ height: "75vh", alignItems: "center", flexDirection: "column", padding: "12px", display: "flex" }}>
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+          <StyledTableContainer component={Paper} className="table-container">
+            <StyledTableContainer component={Paper}>
+              <StyledTable>
+                <TableHead>
+                  <TableRow style={{ backgroundColor: "#BBAB8C" }}>
+                    <StyledTableCell>報工號碼</StyledTableCell>
+                    <StyledTableCell>製令單號</StyledTableCell>
+                    <StyledTableCell>廠別</StyledTableCell>
+                    <StyledTableCell>生產線代號</StyledTableCell>
+                    <StyledTableCell>生產線名稱</StyledTableCell>
+                    <StyledTableCell>產品編號</StyledTableCell>
+                    <StyledTableCell>產品名稱</StyledTableCell>
+                    <StyledTableCell>產品規格</StyledTableCell>
+                    <StyledTableCell>預計生產數量</StyledTableCell>
+                    <StyledTableCell>報工型態</StyledTableCell>
+                    <StyledTableCell>完成數量</StyledTableCell>
+                    <StyledTableCell>備註</StyledTableCell>
+                    <StyledTableCell>總工時</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {workOrders.slice(startIndex, endIndex).map((order) => (
+                    <TableRow key={order.workNumber}>
+                      <StyledTableCell>{order.workNumber}</StyledTableCell>
+                      <StyledTableCell>{order.moNumber}</StyledTableCell>
+                      <StyledTableCell>{order.location}</StyledTableCell>
+                      <StyledTableCell>{order.productionLineCode}</StyledTableCell>
+                      <StyledTableCell>{order.productionLineName}</StyledTableCell>
+                      <StyledTableCell>{order.productNumber}</StyledTableCell>
+                      <StyledTableCell>{order.productName}</StyledTableCell>
+                      <StyledTableCell>{order.productSpecification}</StyledTableCell>
+                      <StyledTableCell>{order.expectedProductionQuantity}</StyledTableCell>
+                      <StyledTableCell>{order.status}</StyledTableCell>
+                      <StyledTableCell>{order.completedQuantity}</StyledTableCell>
+                      <StyledTableCell>{order.remark}</StyledTableCell>
+                      <StyledTableCell>{order.productionHours}</StyledTableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </StyledTable>
+            </StyledTableContainer>
+          </StyledTableContainer>
+        </Grid>
+      </Grid>
 
-          alignItems: "center",
-        }}
-      >
-        <StyledTableContainer component={Paper}>
-          <StyledTable>
-            <TableHead>
-              <TableRow style={{ backgroundColor: "#BBAB8C" }}>
-                <StyledTableCell>報工號碼</StyledTableCell>
-                <StyledTableCell>製令單號</StyledTableCell>
-                <StyledTableCell>廠別</StyledTableCell>
-                <StyledTableCell>生產線代號</StyledTableCell>
-                <StyledTableCell>生產線名稱</StyledTableCell>
-                <StyledTableCell>產品編號</StyledTableCell>
-                <StyledTableCell>產品名稱</StyledTableCell>
-                <StyledTableCell>產品規格</StyledTableCell>
-                <StyledTableCell>預計生產數量</StyledTableCell>
-                <StyledTableCell>報工型態</StyledTableCell>
-                <StyledTableCell>完成數量</StyledTableCell>
-                <StyledTableCell>備註</StyledTableCell>
-                <StyledTableCell>總工時</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {workOrders.slice(startIndex, endIndex).map((order) => (
-                <TableRow key={order.workNumber}>
-                  <StyledTableCell>{order.workNumber}</StyledTableCell>
-                  <StyledTableCell>{order.moNumber}</StyledTableCell>
-                  <StyledTableCell>{order.location}</StyledTableCell>
-                  <StyledTableCell>{order.productionLineCode}</StyledTableCell>
-                  <StyledTableCell>{order.productionLineName}</StyledTableCell>
-                  <StyledTableCell>{order.productNumber}</StyledTableCell>
-                  <StyledTableCell>{order.productName}</StyledTableCell>
-                  <StyledTableCell>{order.productSpecification}</StyledTableCell>
-                  <StyledTableCell>{order.expectedProductionQuantity}</StyledTableCell>
-                  <StyledTableCell>{order.status}</StyledTableCell>
-                  <StyledTableCell>{order.completedQuantity}</StyledTableCell>
-                  <StyledTableCell>{order.remark}</StyledTableCell>
-                  <StyledTableCell>{order.productionHours}</StyledTableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </StyledTable>
-        </StyledTableContainer>
-      </Box>
       <Box
         sx={{
           marginTop: 2,

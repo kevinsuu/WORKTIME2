@@ -5,21 +5,9 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Tooltip } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import EditIcon from "@mui/icons-material/Edit";
+import Grid from "@mui/material/Grid";
+
 import SnackbarAlert from "../Component/SnackbarAlert";
-import {
-  FormControl,
-  Select,
-  CircularProgress,
-  InputLabel,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  DialogContentText,
-  Button,
-} from "@mui/material";
 import {
   styled,
   Box,
@@ -79,32 +67,6 @@ const DataMaintain = () => {
     } else if (method === "EDIT") {
       sendMethod = "POST";
     }
-    // try {
-    //   const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/completeLists/${workNumber}`, {
-    //     method: sendMethod,
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   });
-    //   const responseData = await response.json();
-
-    //   if (response.ok) {
-    //     setWorkOrders(responseData.listsInfo);
-    //     console.log(responseData);
-    //     console.log(responseData.listsInfo);
-    //     if (responseData.success === true) {
-    //       setSnackbarOpen(true);
-    //       setSnackbarMessage(responseData.response);
-    //       setSnackbarStatus("success");
-    //     } else {
-    //       setSnackbarOpen(true);
-    //       setSnackbarMessage(responseData.response);
-    //       setSnackbarStatus("error");
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching employee info:", error);
-    // }
   };
   const handleProductLine = async () => {
     try {
@@ -140,26 +102,7 @@ const DataMaintain = () => {
 
     fetchWorkOrders();
   }, []);
-  const fetchWorkInfo = async () => {
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/lists/${workNumber}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
 
-      if (response.ok) {
-        const responseData = await response.json();
-
-        setWorkInfo(responseData.listsInfo);
-        const productionLineId = responseData.listsInfo[0].productionLineId;
-        setSelectedProductLine(productionLineId);
-      }
-    } catch (error) {
-      console.error("Error fetching work info:", error);
-    }
-  };
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
   };
@@ -183,64 +126,69 @@ const DataMaintain = () => {
         資料維護作業
       </Typography>
 
-      <Box
-        sx={{
-          padding: "12px",
-          display: "flex",
-          flexDirection: "column",
-          height: "78vh",
-          alignItems: "center",
-        }}
-      >
-        <StyledTableContainer component={Paper}>
-          <StyledTable>
-            <TableHead>
-              <TableRow style={{ backgroundColor: "#BBAB8C" }}>
-                <StyledTableCell>報工號碼</StyledTableCell>
-                <StyledTableCell>製令單號</StyledTableCell>
-                <StyledTableCell>報工狀態</StyledTableCell>
-                <StyledTableCell>廠別</StyledTableCell>
-                <StyledTableCell>生產線代號</StyledTableCell>
-                <StyledTableCell>生產線名稱</StyledTableCell>
-                <StyledTableCell>產品編號</StyledTableCell>
-                <StyledTableCell>產品名稱</StyledTableCell>
-                <StyledTableCell>產品規格</StyledTableCell>
-                <StyledTableCell>預計生產數量</StyledTableCell>
-                <StyledTableCell>操作</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {workOrders.slice(startIndex, endIndex).map((order) => (
-                <TableRow key={order.workNumber} onClick={() => handleRowClick(order.workNumber)} style={{ cursor: "pointer" }}>
-                  <StyledTableCell>{order.workNumber}</StyledTableCell>
-                  <StyledTableCell>{order.moNumber}</StyledTableCell>
-                  <StyledTableCell>{order.status}</StyledTableCell>
-                  <StyledTableCell>{order.location}</StyledTableCell>
-                  <StyledTableCell>{order.productionLineCode}</StyledTableCell>
-                  <StyledTableCell>{order.productionLineName}</StyledTableCell>
-                  <StyledTableCell>{order.productNumber}</StyledTableCell>
-                  <StyledTableCell>{order.productName}</StyledTableCell>
-                  <StyledTableCell>{order.productSpecification}</StyledTableCell>
-                  <StyledTableCell>{order.expectedProductionQuantity}</StyledTableCell>
-                  <StyledTableCell onClick={(e) => e.stopPropagation()}>
-                    <Tooltip title="刪除">
-                      <IconButton
-                        sx={{ "& svg": { fontSize: "24px" } }} // 设置图标大小为 1rem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSingleSubmit(order.workNumber, "DELETE");
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </StyledTableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </StyledTable>
-        </StyledTableContainer>
-      </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+          <Box
+            sx={{
+              padding: "12px",
+              display: "flex",
+              flexDirection: "column",
+              height: "78vh",
+              alignItems: "center",
+            }}
+          >
+            <StyledTableContainer component={Paper}>
+              <StyledTable>
+                <TableHead>
+                  <TableRow style={{ backgroundColor: "#BBAB8C" }}>
+                    <StyledTableCell>報工號碼</StyledTableCell>
+                    <StyledTableCell>製令單號</StyledTableCell>
+                    <StyledTableCell>報工狀態</StyledTableCell>
+                    <StyledTableCell>廠別</StyledTableCell>
+                    <StyledTableCell>生產線代號</StyledTableCell>
+                    <StyledTableCell>生產線名稱</StyledTableCell>
+                    <StyledTableCell>產品編號</StyledTableCell>
+                    <StyledTableCell>產品名稱</StyledTableCell>
+                    <StyledTableCell>產品規格</StyledTableCell>
+                    <StyledTableCell>預計生產數量</StyledTableCell>
+                    <StyledTableCell>操作</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {workOrders.slice(startIndex, endIndex).map((order) => (
+                    <TableRow key={order.workNumber} onClick={() => handleRowClick(order.workNumber)} style={{ cursor: "pointer" }}>
+                      <StyledTableCell>{order.workNumber}</StyledTableCell>
+                      <StyledTableCell>{order.moNumber}</StyledTableCell>
+                      <StyledTableCell>{order.status}</StyledTableCell>
+                      <StyledTableCell>{order.location}</StyledTableCell>
+                      <StyledTableCell>{order.productionLineCode}</StyledTableCell>
+                      <StyledTableCell>{order.productionLineName}</StyledTableCell>
+                      <StyledTableCell>{order.productNumber}</StyledTableCell>
+                      <StyledTableCell>{order.productName}</StyledTableCell>
+                      <StyledTableCell>{order.productSpecification}</StyledTableCell>
+                      <StyledTableCell>{order.expectedProductionQuantity}</StyledTableCell>
+                      <StyledTableCell onClick={(e) => e.stopPropagation()}>
+                        <Tooltip title="刪除">
+                          <IconButton
+                            sx={{ "& svg": { fontSize: "24px" } }} // 设置图标大小为 1rem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSingleSubmit(order.workNumber, "DELETE");
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </StyledTableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </StyledTable>
+            </StyledTableContainer>
+          </Box>
+        </Grid>
+      </Grid>
+
       <SnackbarAlert open={isSnackbarOpen} message={isSnackbarMessage} status={isSnackbarStatus} handleClose={() => setSnackbarOpen(false)} />
 
       <Box

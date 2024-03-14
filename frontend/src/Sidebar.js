@@ -90,7 +90,7 @@ const Sidebar = () => {
         alignItems: "center",
       }}
     >
-      <Avatar alt="公司logo" src="/SM-2.png" sx={{ width: 200, height: 60, marginRight: "8px", borderRadius: 0 }} />
+      <Avatar alt="公司logo" src="/SM-2.png" sx={{ width: 200, height: 80, marginTop: "12px", marginRight: "8px", borderRadius: 0 }} />
 
       <Box sx={{ padding: "12px", fontSize: "24px", color: "#3E3232" }}>報工2.0</Box>
 

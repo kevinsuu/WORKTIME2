@@ -12,8 +12,6 @@ class EmployeeListController {
     this.allEmployeeStartWork = this.allEmployeeStartWork.bind(this);
     this.singleDeleteEmployee = this.singleDeleteEmployee.bind(this);
     this.singleCompleteEmployee = this.singleCompleteEmployee.bind(this);
-    this.now = new Date(); // 建立一個日期物件
-    this.taipeiTime = new Date(this.now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
   }
   async formattedEmployeeList(moNumber, workNumber) {
     const employeeList = await EmployeeList.findAll({
@@ -66,11 +64,21 @@ class EmployeeListController {
       );
 
       if (existingEmployee !== undefined) {
-        return res.json({
-          success: true,
-          response: "員工已存在於其他工單中",
-          employeeListData: await this.formattedEmployeeList(moNumber, workNumber),
+        const [employeeList, created] = await EmployeeList.findOrCreate({
+          where: { employeeId: employeeId.toString(), moNumber: moNumber, workNumber: workNumber },
         });
+
+        if (!created) {
+          return res.json({ success: false, response: "員工已存在", employeeListData: await this.formattedEmployeeList(moNumber, workNumber) });
+        } else if (existingEmployee !== undefined && created) {
+          return res.json({
+            success: true,
+            response: "員工已存在於其他工單中",
+            employeeListData: await this.formattedEmployeeList(moNumber, workNumber),
+          });
+        } else {
+        }
+        return res.json({ success: true, response: "員工已新增", employeeListData: await this.formattedEmployeeList(moNumber, workNumber) });
       } else {
         const [employeeList, created] = await EmployeeList.findOrCreate({
           where: { employeeId: employeeId.toString(), moNumber: moNumber, workNumber: workNumber },
@@ -111,9 +119,11 @@ class EmployeeListController {
 
       for (const item of employeeList) {
         if (!item.startTime) {
-          const hours = this.taipeiTime.getHours().toString().padStart(2, "0");
-          const minutes = this.taipeiTime.getMinutes().toString().padStart(2, "0");
-          const seconds = this.taipeiTime.getSeconds().toString().padStart(2, "0");
+          const now = new Date();
+          const taipeiTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+          const hours = taipeiTime.getHours().toString().padStart(2, "0");
+          const minutes = taipeiTime.getMinutes().toString().padStart(2, "0");
+          const seconds = taipeiTime.getSeconds().toString().padStart(2, "0");
           const startTime = `${hours}:${minutes}:${seconds}`;
 
           item.startTime = startTime; // 將日期時間對象轉換為 ISO 字符串
@@ -192,10 +202,13 @@ class EmployeeListController {
         return res.status(404).json({ error: "Employee not found" });
       }
       if (!employeeList.startTime) {
-        const hours = this.taipeiTime.getHours().toString().padStart(2, "0");
-        const minutes = this.taipeiTime.getMinutes().toString().padStart(2, "0");
-        const seconds = this.taipeiTime.getSeconds().toString().padStart(2, "0");
+        const now = new Date();
+        const taipeiTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+        const hours = taipeiTime.getHours().toString().padStart(2, "0");
+        const minutes = taipeiTime.getMinutes().toString().padStart(2, "0");
+        const seconds = taipeiTime.getSeconds().toString().padStart(2, "0");
         const startTime = `${hours}:${minutes}:${seconds}`;
+        console.log(startTime);
         employeeList.startTime = startTime;
         await employeeList.save();
       }
@@ -244,12 +257,13 @@ class EmployeeListController {
         return res.status(404).json({ error: "Employee not found" });
       }
       if (!employeeList.endTime) {
-        const endHours = this.taipeiTime.getHours().toString();
-        const endMinutes = this.taipeiTime.getMinutes().toString();
-        const endSeconds = this.taipeiTime.getSeconds().toString();
+        const now = new Date();
+        const taipeiTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+        const endHours = taipeiTime.getHours().toString();
+        const endMinutes = taipeiTime.getMinutes().toString();
+        const endSeconds = taipeiTime.getSeconds().toString();
         const endTime = `${endHours}:${endMinutes}:${endSeconds}`;
-
-        // 解析 startTime
+        console.log(endTime);
 
         const [startHours, startMinutes, startSeconds] = employeeList.startTime.split(":");
 

@@ -519,7 +519,7 @@ const WorkPage = () => {
             </StyledTable>
             <Box
               sx={{
-                height: "450px", // 設置固定高度
+                height: "400px", // 設置固定高度
                 overflowY: "auto", // 設置垂直滾動
                 width: "100%", // 確保寬度擴展至父元素的寬度
               }}

@@ -5,22 +5,12 @@ import "./fonts.css"; // Import the CSS file with font-face rule
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Tooltip } from "@mui/material";
-import {
-  FormControl,
-  MenuItem,
-  Select,
-  CircularProgress,
-  InputLabel,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  DialogContentText,
-} from "@mui/material";
+import Grid from "@mui/material/Grid";
+
+import { CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { DatePicker, TimePicker } from "@mui/lab";
 
 import SnackbarAlert from "../Component/SnackbarAlert";
 import TableCellWithText from "../Component/TableCellWithText";
@@ -140,8 +130,8 @@ const EditWorkPage = () => {
   };
 
   const handleSingleSubmit = async (employeeId, employeeName, status, startTime, endTime) => {
+    console.log(startTime, endTime);
     setEditingEmployeeId(employeeId);
-
     setEmployeeId(employeeId);
     let sendMethod = null;
     if (status === "DELETE") {
@@ -339,7 +329,6 @@ const EditWorkPage = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-
           zIndex: 9999, // 設定 zIndex 以確保 CircularProgress 顯示在最上層
           visibility: loading ? "visible" : "hidden", // 根據 loading 狀態調整顯示/隱藏
         }}
@@ -357,247 +346,257 @@ const EditWorkPage = () => {
           position: "relative", // 设置相对定位
         }}
       >
-        <Box
-          sx={{
-            height: "100%", // 設置固定高度
-            overflowY: "hidden", // 設置垂直滾動
-            width: "100%", // 確保寬度擴展至父元素的寬度
-          }}
-        >
-          <StyledTableContainer component={Paper}>
-            <StyledTable>
-              <TableBody>
-                {workDataLoaded && workInfo ? (
-                  <>
-                    <TableRow>
-                      <TableCell
-                        colSpan={4}
-                        sx={{ textAlign: "center", fontWeight: "bold", fontSize: "16px", borderRight: "1px solid #ccc", backgroundColor: "#BBAB8C" }}
-                      >
-                        報工號碼:{workNumber}
-                      </TableCell>
-                    </TableRow>
-                    <TableCellWithText
-                      leftTitle="製令單號"
-                      leftValue={
-                        <TextField
-                          size="small" // 設置為小尺寸
-                          value={editingWorkNumber !== "" ? editingWorkNumber : workInfo.moNumber}
-                          onChange={handleWorkNumberEdit}
-                        />
-                      }
-                      rightTitle="產品編號"
-                      rightValue={workInfo.productNumber}
-                    />
-                    <TableCellWithText leftTitle="廠別" leftValue={workInfo.location} rightTitle="產品名稱" rightValue={workInfo.productName} />
-
-                    <TableCellWithText
-                      leftTitle="生產線代號"
-                      leftValue={workInfo.productionLineCode}
-                      rightTitle="生產線名稱"
-                      rightValue={workInfo.productionLineName}
-                    />
-                    <TableCellWithText
-                      leftTitle="產品規格"
-                      leftValue={workInfo.productSpecification}
-                      rightTitle="預計生產數量"
-                      rightValue={
-                        <TextField
-                          size="small" // 設置為小尺寸
-                          value={editingProductionQuantity !== "" ? editingProductionQuantity : workInfo.expectedProductionQuantity}
-                          onChange={handleProductionQuantityEdit}
-                        />
-                      }
-                    />
-                  </>
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={6} style={{ fontWeight: "bold", color: "#555", textAlign: "center" }}>
-                      資料載入中...
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </StyledTable>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
             <Box
               sx={{
-                position: "absolute",
-                top: 20, // 调整图标的位置
-                right: 20,
+                height: "100%", // 設置固定高度
+                overflowY: "hidden", // 設置垂直滾動
+                width: "100%", // 確保寬度擴展至父元素的寬度
               }}
             >
-              <Tooltip title="刪除工單">
-                <Button
+              <StyledTableContainer component={Paper}>
+                <StyledTable>
+                  <TableBody>
+                    {workDataLoaded && workInfo ? (
+                      <>
+                        <TableRow>
+                          <TableCell
+                            colSpan={4}
+                            sx={{
+                              textAlign: "center",
+                              fontWeight: "bold",
+                              fontSize: "16px",
+                              borderRight: "1px solid #ccc",
+                              backgroundColor: "#BBAB8C",
+                            }}
+                          >
+                            報工號碼:{workNumber}
+                          </TableCell>
+                        </TableRow>
+                        <TableCellWithText
+                          leftTitle="製令單號"
+                          leftValue={
+                            <TextField
+                              size="small" // 設置為小尺寸
+                              value={editingWorkNumber !== "" ? editingWorkNumber : workInfo.moNumber}
+                              onChange={handleWorkNumberEdit}
+                            />
+                          }
+                          rightTitle="產品編號"
+                          rightValue={workInfo.productNumber}
+                        />
+                        <TableCellWithText leftTitle="廠別" leftValue={workInfo.location} rightTitle="產品名稱" rightValue={workInfo.productName} />
+
+                        <TableCellWithText
+                          leftTitle="生產線代號"
+                          leftValue={workInfo.productionLineCode}
+                          rightTitle="生產線名稱"
+                          rightValue={workInfo.productionLineName}
+                        />
+                        <TableCellWithText
+                          leftTitle="產品規格"
+                          leftValue={workInfo.productSpecification}
+                          rightTitle="預計生產數量"
+                          rightValue={
+                            <TextField
+                              size="small" // 設置為小尺寸
+                              value={editingProductionQuantity !== "" ? editingProductionQuantity : workInfo.expectedProductionQuantity}
+                              onChange={handleProductionQuantityEdit}
+                            />
+                          }
+                        />
+                      </>
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={6} style={{ fontWeight: "bold", color: "#555", textAlign: "center" }}>
+                          資料載入中...
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </StyledTable>
+                <Box
                   sx={{
-                    minWidth: 0,
-                    padding: 0,
-                    borderRadius: "50%",
-                    color: "#503C3C",
+                    position: "absolute",
+                    top: 20, // 调整图标的位置
+                    right: 20,
                   }}
-                  onClick={handleDeleteWorkButton}
                 >
-                  <DeleteIcon />
-                </Button>
-              </Tooltip>
+                  <Tooltip title="刪除工單">
+                    <Button
+                      sx={{
+                        minWidth: 0,
+                        padding: 0,
+                        borderRadius: "50%",
+                        color: "#503C3C",
+                      }}
+                      onClick={handleDeleteWorkButton}
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </Tooltip>
+                </Box>
+                <Dialog open={openDeleteDialog} onClose={handleDeleteCancel}>
+                  <DialogTitle>刪除工單</DialogTitle>
+                  <DialogContent>確定要刪除此工單嗎？</DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleDeleteCancel} color="primary">
+                      取消
+                    </Button>
+                    <Button onClick={handleDeleteConfirm} color="primary">
+                      確定
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    width: "100%", // Ensure the buttons span the entire width
+                  }}
+                >
+                  <Box sx={{ maxWidth: "300px" }}>
+                    <TextField
+                      label="請輸入員工工號或姓名"
+                      variant="outlined"
+                      value={employeeInput}
+                      onChange={(e) => setEmployeeInput(e.target.value)}
+                      fullWidth
+                    />
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleEmployeeSubmit}
+                    sx={{ "&:hover": { backgroundColor: "#B0A695" }, backgroundColor: "#3A3845", marginRight: "8px" }}
+                  >
+                    加入員工
+                  </Button>
+                </Box>
+                <StyledTable>
+                  <TableHead sx={{ backgroundColor: "#BBAB8C", position: "sticky", top: 0 }}>
+                    <TableRow>
+                      <StyledTableCell>序號</StyledTableCell>
+                      <StyledTableCell>員工工號</StyledTableCell>
+                      <StyledTableCell>員工姓名</StyledTableCell>
+                      <StyledTableCell>開工時間</StyledTableCell>
+                      <StyledTableCell>完工時間</StyledTableCell>
+                      <StyledTableCell>休息時間</StyledTableCell>
+                      <StyledTableCell>總工時(HR)</StyledTableCell>
+                      <StyledTableCell>操作</StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                </StyledTable>
+                <Box
+                  sx={{
+                    height: "400px", // 設置固定高度
+                    overflowY: "auto", // 設置垂直滾動
+                    width: "100%", // 確保寬度擴展至父元素的寬度
+                  }}
+                >
+                  <StyledTable>
+                    <TableBody>
+                      {employeeDataLoaded ? (
+                        employeeInfo && employeeInfo.length > 0 ? (
+                          employeeInfo.map((employee, index) => (
+                            <TableRow
+                              key={index}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E0E0E0")}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "")}
+                            >
+                              <StyledMemberTableCell>{index + 1}</StyledMemberTableCell>
+                              <StyledMemberTableCell>{employee.employeeId}</StyledMemberTableCell>
+                              <StyledMemberTableCell>{employee.employeeName}</StyledMemberTableCell>
+                              <StyledMemberTableCell>
+                                <input
+                                  type="time"
+                                  value={editedEmployeeStartTimes[index] || (employee.startTime ? employee.startTime : "00:00")}
+                                  onChange={(e) => handleStartTimeChange(e.target.value, index)}
+                                />
+                              </StyledMemberTableCell>
+                              <StyledMemberTableCell>
+                                <input
+                                  type="time"
+                                  value={editedEmployeeEndTimes[index] || (employee.endTime ? employee.endTime : "00:00")}
+                                  onChange={(e) => handleEndTimeChange(e.target.value, index)}
+                                />
+                              </StyledMemberTableCell>
+
+                              <StyledMemberTableCell>{employee.sleepTime}</StyledMemberTableCell>
+                              <StyledMemberTableCell>{employee.totalTime}</StyledMemberTableCell>
+                              <StyledMemberTableCell>
+                                <Tooltip title="儲存">
+                                  <IconButton
+                                    onClick={() =>
+                                      handleSingleSubmit(
+                                        employee.employeeId,
+                                        employee.employeeName,
+                                        "COMPLETE",
+                                        editedEmployeeStartTimes[index] !== undefined ? editedEmployeeStartTimes[index] : employee.startTime,
+                                        editedEmployeeEndTimes[index] !== undefined ? editedEmployeeEndTimes[index] : employee.endTime
+                                      )
+                                    }
+                                  >
+                                    <CheckCircleIcon />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title="刪除員工">
+                                  <IconButton
+                                    onClick={() =>
+                                      handleSingleSubmit(
+                                        employee.employeeId,
+                                        employee.employeeName,
+                                        "DELETE",
+                                        editedEmployeeStartTimes[index] !== undefined ? editedEmployeeStartTimes[index] : employee.startTime,
+                                        editedEmployeeEndTimes[index] !== undefined ? editedEmployeeEndTimes[index] : employee.endTime
+                                      )
+                                    }
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </StyledMemberTableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <StyledMemberTableCell colSpan={6} style={{ fontWeight: "bold", color: "#555", textAlign: "center" }}>
+                              此工單暫無員工
+                            </StyledMemberTableCell>
+                          </TableRow>
+                        )
+                      ) : (
+                        <TableRow>
+                          <StyledMemberTableCell colSpan={6} style={{ fontWeight: "bold", color: "#555", textAlign: "center" }}>
+                            資料載入中...
+                          </StyledMemberTableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </StyledTable>
+                </Box>
+              </StyledTableContainer>
             </Box>
-            <Dialog open={openDeleteDialog} onClose={handleDeleteCancel}>
-              <DialogTitle>刪除工單</DialogTitle>
-              <DialogContent>確定要刪除此工單嗎？</DialogContent>
+
+            <Dialog open={openDeleteEmployeeDialog} onClose={() => setCompleteWorkDialog(false)}>
+              <DialogTitle>刪除員工</DialogTitle>
+              <DialogContent>
+                <DialogContentText>確定要刪除此員工嗎？</DialogContentText>
+              </DialogContent>
               <DialogActions>
-                <Button onClick={handleDeleteCancel} color="primary">
+                <Button onClick={() => setOpenDeleteEmployeeDialog(false)} color="primary">
                   取消
                 </Button>
-                <Button onClick={handleDeleteConfirm} color="primary">
+                <Button onClick={() => handleDeleteEmployeeConfirmation(true)} color="primary" autoFocus>
                   確定
                 </Button>
               </DialogActions>
             </Dialog>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                width: "100%", // Ensure the buttons span the entire width
-              }}
-            >
-              <Box sx={{ maxWidth: "300px" }}>
-                <TextField
-                  label="請輸入員工工號或姓名"
-                  variant="outlined"
-                  value={employeeInput}
-                  onChange={(e) => setEmployeeInput(e.target.value)}
-                  fullWidth
-                />
-              </Box>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleEmployeeSubmit}
-                sx={{ "&:hover": { backgroundColor: "#B0A695" }, backgroundColor: "#3A3845", marginRight: "8px" }}
-              >
-                加入員工
-              </Button>
-            </Box>
-            <StyledTable>
-              <TableHead sx={{ backgroundColor: "#BBAB8C", position: "sticky", top: 0 }}>
-                <TableRow>
-                  <StyledTableCell>序號</StyledTableCell>
-                  <StyledTableCell>員工工號</StyledTableCell>
-                  <StyledTableCell>員工姓名</StyledTableCell>
-                  <StyledTableCell>開工時間</StyledTableCell>
-                  <StyledTableCell>完工時間</StyledTableCell>
-                  <StyledTableCell>休息時間</StyledTableCell>
-                  <StyledTableCell>總工時(HR)</StyledTableCell>
-                  <StyledTableCell>操作</StyledTableCell>
-                </TableRow>
-              </TableHead>
-            </StyledTable>
-            <Box
-              sx={{
-                height: "450px", // 設置固定高度
-                overflowY: "auto", // 設置垂直滾動
-                width: "100%", // 確保寬度擴展至父元素的寬度
-              }}
-            >
-              <StyledTable>
-                <TableBody>
-                  {employeeDataLoaded ? (
-                    employeeInfo && employeeInfo.length > 0 ? (
-                      employeeInfo.map((employee, index) => (
-                        <TableRow
-                          key={index}
-                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E0E0E0")}
-                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "")}
-                        >
-                          <StyledMemberTableCell>{index + 1}</StyledMemberTableCell>
-                          <StyledMemberTableCell>{employee.employeeId}</StyledMemberTableCell>
-                          <StyledMemberTableCell>{employee.employeeName}</StyledMemberTableCell>
-                          <StyledMemberTableCell>
-                            <input
-                              type="time"
-                              value={editedEmployeeStartTimes[index] || (employee.startTime ? employee.startTime : "00:00")}
-                              onChange={(e) => handleStartTimeChange(e.target.value, index)}
-                            />
-                          </StyledMemberTableCell>
-                          <StyledMemberTableCell>
-                            <input
-                              type="time"
-                              value={editedEmployeeEndTimes[index] || (employee.endTime ? employee.endTime : "00:00")}
-                              onChange={(e) => handleEndTimeChange(e.target.value, index)}
-                            />
-                          </StyledMemberTableCell>
 
-                          <StyledMemberTableCell>{employee.sleepTime}</StyledMemberTableCell>
-                          <StyledMemberTableCell>{employee.totalTime}</StyledMemberTableCell>
-                          <StyledMemberTableCell>
-                            <Tooltip title="儲存">
-                              <IconButton
-                                onClick={() =>
-                                  handleSingleSubmit(
-                                    employee.employeeId,
-                                    employee.employeeName,
-                                    "COMPLETE",
-                                    editedEmployeeStartTimes[index],
-                                    editedEmployeeEndTimes[index]
-                                  )
-                                }
-                              >
-                                <CheckCircleIcon />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="刪除員工">
-                              <IconButton
-                                onClick={() =>
-                                  handleSingleSubmit(
-                                    employee.employeeId,
-                                    employee.employeeName,
-                                    "DELETE",
-                                    editedEmployeeStartTimes[index],
-                                    editedEmployeeEndTimes[index]
-                                  )
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </StyledMemberTableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <StyledMemberTableCell colSpan={6} style={{ fontWeight: "bold", color: "#555", textAlign: "center" }}>
-                          此工單暫無員工
-                        </StyledMemberTableCell>
-                      </TableRow>
-                    )
-                  ) : (
-                    <TableRow>
-                      <StyledMemberTableCell colSpan={6} style={{ fontWeight: "bold", color: "#555", textAlign: "center" }}>
-                        資料載入中...
-                      </StyledMemberTableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </StyledTable>
-            </Box>
-          </StyledTableContainer>
-        </Box>
-
-        <Dialog open={openDeleteEmployeeDialog} onClose={() => setCompleteWorkDialog(false)}>
-          <DialogTitle>刪除員工</DialogTitle>
-          <DialogContent>
-            <DialogContentText>確定要刪除此員工嗎？</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenDeleteEmployeeDialog(false)} color="primary">
-              取消
-            </Button>
-            <Button onClick={() => handleDeleteEmployeeConfirmation(true)} color="primary" autoFocus>
-              確定
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <SnackbarAlert open={isSnackbarOpen} message={isSnackbarMessage} status={isSnackbarStatus} handleClose={() => setSnackbarOpen(false)} />
+            <SnackbarAlert open={isSnackbarOpen} message={isSnackbarMessage} status={isSnackbarStatus} handleClose={() => setSnackbarOpen(false)} />
+          </Grid>
+        </Grid>
       </Box>
     </Box>
   );

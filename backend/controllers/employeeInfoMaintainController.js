@@ -7,9 +7,8 @@ class EmployeeInfoMaintainController {
   constructor() {
     this.dataBase = DataBase;
     this.singleDeleteEmployee = this.singleDeleteEmployee.bind(this);
-    this.singleCompleteEmployee = this.singleEditEmployee.bind(this);
+    this.singleEditEmployee = this.singleEditEmployee.bind(this);
     this.addEmployeeList = this.addEmployeeList.bind(this);
-
     this.now = new Date(); // 建立一個日期物件
     this.taipeiTime = new Date(this.now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
   }
@@ -143,7 +142,7 @@ class EmployeeInfoMaintainController {
       const totalTimeHours = (diffSeconds / 3600).toFixed(2);
       employeeList.totalTime = totalTimeHours;
       await employeeList.save();
-
+      console.log(moNumber, workNumber);
       return res.json({ success: true, response: "成員已完工", employeeListsInfo: await this.formattedEmployeeList(moNumber, workNumber) });
     } catch (error) {
       console.error("Error updating start time for all employees:", error);

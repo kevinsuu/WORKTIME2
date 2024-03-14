@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import "./fonts.css"; // Import the CSS file with font-face rule
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import RefreshIcon from "@mui/icons-material/Refresh"; // Import Refresh icon from MUI
+import Grid from "@mui/material/Grid";
 
 import {
   styled,
@@ -176,50 +177,44 @@ const HomePage = () => {
           </Button>
         )}
       </Box>
-      <Box
-        sx={{
-          padding: "12px",
-          display: "flex",
-          flexDirection: "column",
-          height: "77vh",
-          alignItems: "center",
-        }}
-      >
-        <StyledTableContainer component={Paper}>
-          <StyledTable>
-            <TableHead>
-              <TableRow style={{ backgroundColor: "#BBAB8C" }}>
-                {createSortHeader("workNumber", "報工號碼")}
-                {createSortHeader("moNumber", "製令單號")}
-                {createSortHeader("status", "報工狀態")}
-                {createSortHeader("location", "廠別")}
-                {createSortHeader("productionLineCode", "生產線代號")}
-                {createSortHeader("productionLineName", "生產線名稱")}
-                {createSortHeader("productNumber", "產品編號")}
-                {createSortHeader("productName", "產品名稱")}
-                {createSortHeader("productSpecification", "產品規格")}
-                {createSortHeader("expectedProductionQuantity", "預計生產數量")}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sortedWorkOrders.slice(startIndex, endIndex).map((order) => (
-                <TableRow key={order.workNumber} onClick={() => handleRowClick(order.workNumber)} style={{ cursor: "pointer" }}>
-                  <StyledTableCell>{order.workNumber}</StyledTableCell>
-                  <StyledTableCell>{order.moNumber}</StyledTableCell>
-                  <StyledTableCell>{order.status}</StyledTableCell>
-                  <StyledTableCell>{order.location}</StyledTableCell>
-                  <StyledTableCell>{order.productionLineCode}</StyledTableCell>
-                  <StyledTableCell>{order.productionLineName}</StyledTableCell>
-                  <StyledTableCell>{order.productNumber}</StyledTableCell>
-                  <StyledTableCell>{order.productName}</StyledTableCell>
-                  <StyledTableCell>{order.productSpecification}</StyledTableCell>
-                  <StyledTableCell>{order.expectedProductionQuantity}</StyledTableCell>
+      <Grid container spacing={2} sx={{ height: "75vh", alignItems: "center", flexDirection: "column", padding: "12px", display: "flex" }}>
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+          <StyledTableContainer component={Paper}>
+            <StyledTable>
+              <TableHead>
+                <TableRow style={{ backgroundColor: "#BBAB8C" }}>
+                  {createSortHeader("workNumber", "報工號碼")}
+                  {createSortHeader("moNumber", "製令單號")}
+                  {createSortHeader("status", "報工狀態")}
+                  {createSortHeader("location", "廠別")}
+                  {createSortHeader("productionLineCode", "生產線代號")}
+                  {createSortHeader("productionLineName", "生產線名稱")}
+                  {createSortHeader("productNumber", "產品編號")}
+                  {createSortHeader("productName", "產品名稱")}
+                  {createSortHeader("productSpecification", "產品規格")}
+                  {createSortHeader("expectedProductionQuantity", "預計生產數量")}
                 </TableRow>
-              ))}
-            </TableBody>
-          </StyledTable>
-        </StyledTableContainer>
-      </Box>
+              </TableHead>
+              <TableBody>
+                {sortedWorkOrders.slice(startIndex, endIndex).map((order) => (
+                  <TableRow key={order.workNumber} onClick={() => handleRowClick(order.workNumber)} style={{ cursor: "pointer" }}>
+                    <StyledTableCell>{order.workNumber}</StyledTableCell>
+                    <StyledTableCell>{order.moNumber}</StyledTableCell>
+                    <StyledTableCell>{order.status}</StyledTableCell>
+                    <StyledTableCell>{order.location}</StyledTableCell>
+                    <StyledTableCell>{order.productionLineCode}</StyledTableCell>
+                    <StyledTableCell>{order.productionLineName}</StyledTableCell>
+                    <StyledTableCell>{order.productNumber}</StyledTableCell>
+                    <StyledTableCell>{order.productName}</StyledTableCell>
+                    <StyledTableCell>{order.productSpecification}</StyledTableCell>
+                    <StyledTableCell>{order.expectedProductionQuantity}</StyledTableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </StyledTable>
+          </StyledTableContainer>
+        </Grid>
+      </Grid>
       <Box
         sx={{
           marginTop: 2,

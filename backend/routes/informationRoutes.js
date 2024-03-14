@@ -58,7 +58,7 @@ router.get("/completeLists", useAsync(ListController.getCompleteList));
 router.delete("/completeLists/:id", useAsync(ListController.deleteCompleteList));
 
 // EditEmployee routes`
-router.put("/employeeInfoMaintain/:employeeId/:moNumber/:workNumber", useAsync(employeeInfoMaintainController.singleCompleteEmployee));
+router.put("/employeeInfoMaintain/:employeeId/:moNumber/:workNumber", useAsync(employeeInfoMaintainController.singleEditEmployee));
 router.post("/employeeInfoMaintain/:employeeId/:moNumber/:workNumber", useAsync(employeeInfoMaintainController.addEmployeeList));
 
 module.exports = router;

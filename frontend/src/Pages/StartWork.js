@@ -22,6 +22,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
+import Grid from "@mui/material/Grid";
 
 const StyledTableContainer = styled(TableContainer)({
   marginTop: 2,
@@ -135,79 +136,74 @@ const SetStartWork = () => {
       <Typography variant="h5" sx={{ marginBottom: "20px", color: "#503C3C", fontWeight: "bold" }}>
         開始報工
       </Typography>
-      <Box
-        sx={{
-          padding: "12px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Box>
-          <OutlinedInput
-            placeholder="請輸入製令單號 e.g.20240120002test "
-            value={StartWorkNumber}
-            onChange={(e) => setStartWorkNumber(e.target.value)}
-            sx={{
-              marginBottom: "20px",
-              width: "300px",
 
-              backgroundColor: "white", // Set the background color to white for the input
-            }}
-          />
-          <Select
-            value={shift}
-            onChange={(e) => setShift(e.target.value)}
-            displayEmpty
-            sx={{
-              marginBottom: "20px",
-              width: "100px",
-              backgroundColor: "white", // Set the background color to white for the input
-            }}
-          >
-            <MenuItem value="日班">日班</MenuItem>
-            <MenuItem value="加班">加班</MenuItem>
-          </Select>
+      <Box>
+        <OutlinedInput
+          placeholder="請輸入製令單號 e.g.20240120002test "
+          value={StartWorkNumber}
+          onChange={(e) => setStartWorkNumber(e.target.value)}
+          sx={{
+            marginBottom: "20px",
+            width: "300px",
 
-          <Button variant="contained" color="primary" onClick={handleWorkReportSubmit} sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}>
-            送出
-          </Button>
-        </Box>
+            backgroundColor: "white", // Set the background color to white for the input
+          }}
+        />
+        <Select
+          value={shift}
+          onChange={(e) => setShift(e.target.value)}
+          displayEmpty
+          sx={{
+            marginBottom: "20px",
+            width: "100px",
+            backgroundColor: "white", // Set the background color to white for the input
+          }}
+        >
+          <MenuItem value="日班">日班</MenuItem>
+          <MenuItem value="加班">加班</MenuItem>
+        </Select>
 
-        <StyledTableContainer component={Paper}>
-          <StyledTable>
-            <TableHead>
-              <StyledTableCell colSpan={12} align="center" style={{ backgroundColor: "#B19470", color: "#FFFFFF" }}>
-                工單清單範例
-              </StyledTableCell>
-              <TableRow style={{ backgroundColor: "#BBAB8C" }}>
-                <StyledTableCell>製令單號</StyledTableCell>
-                <StyledTableCell>廠別</StyledTableCell>
-                <StyledTableCell>生產線代號</StyledTableCell>
-                <StyledTableCell>生產線名稱</StyledTableCell>
-                <StyledTableCell>產品編號</StyledTableCell>
-                <StyledTableCell>產品名稱</StyledTableCell>
-                <StyledTableCell>產品規格</StyledTableCell>
-                <StyledTableCell>預計生產數量</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {workOrders.map((order) => (
-                <TableRow key={order.moNumber}>
-                  <StyledTableCell>{order.moNumber}</StyledTableCell>
-                  <StyledTableCell>{order.location}</StyledTableCell>
-                  <StyledTableCell>{order.productionLineCode}</StyledTableCell>
-                  <StyledTableCell>{order.productionLineName}</StyledTableCell>
-                  <StyledTableCell>{order.productNumber}</StyledTableCell>
-                  <StyledTableCell>{order.productName}</StyledTableCell>
-                  <StyledTableCell>{order.productSpecification}</StyledTableCell>
-                  <StyledTableCell>{order.expectedProductionQuantity}</StyledTableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </StyledTable>
-        </StyledTableContainer>
+        <Button variant="contained" color="primary" onClick={handleWorkReportSubmit} sx={{ marginLeft: "20px", backgroundColor: "#503C3C" }}>
+          送出
+        </Button>
       </Box>
+      <Grid container spacing={2} sx={{ width: "80%", alignItems: "center", flexDirection: "column", padding: "12px", display: "flex" }}>
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+          <StyledTableContainer component={Paper}>
+            <StyledTable>
+              <TableHead>
+                <StyledTableCell colSpan={12} align="center" style={{ backgroundColor: "#B19470", color: "#FFFFFF" }}>
+                  工單清單範例
+                </StyledTableCell>
+                <TableRow style={{ backgroundColor: "#BBAB8C" }}>
+                  <StyledTableCell>製令單號</StyledTableCell>
+                  <StyledTableCell>廠別</StyledTableCell>
+                  <StyledTableCell>生產線代號</StyledTableCell>
+                  <StyledTableCell>生產線名稱</StyledTableCell>
+                  <StyledTableCell>產品編號</StyledTableCell>
+                  <StyledTableCell>產品名稱</StyledTableCell>
+                  <StyledTableCell>產品規格</StyledTableCell>
+                  <StyledTableCell>預計生產數量</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {workOrders.map((order) => (
+                  <TableRow key={order.moNumber}>
+                    <StyledTableCell>{order.moNumber}</StyledTableCell>
+                    <StyledTableCell>{order.location}</StyledTableCell>
+                    <StyledTableCell>{order.productionLineCode}</StyledTableCell>
+                    <StyledTableCell>{order.productionLineName}</StyledTableCell>
+                    <StyledTableCell>{order.productNumber}</StyledTableCell>
+                    <StyledTableCell>{order.productName}</StyledTableCell>
+                    <StyledTableCell>{order.productSpecification}</StyledTableCell>
+                    <StyledTableCell>{order.expectedProductionQuantity}</StyledTableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </StyledTable>
+          </StyledTableContainer>
+        </Grid>
+      </Grid>
       <Snackbar open={isSnackbarOpen} autoHideDuration={1500} onClose={() => setSnackbarOpen(false)}>
         <MuiAlert elevation={6} variant="filled" onClose={() => setSnackbarOpen(false)} severity={isSnackbarStatus}>
           {isSnackbarMessage}
