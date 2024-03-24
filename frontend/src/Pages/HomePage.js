@@ -3,6 +3,7 @@ import "./fonts.css"; // Import the CSS file with font-face rule
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import RefreshIcon from "@mui/icons-material/Refresh"; // Import Refresh icon from MUI
 import Grid from "@mui/material/Grid";
+import SnackbarAlert from "../Component/SnackbarAlert";
 
 import {
   styled,
@@ -19,6 +20,8 @@ import {
   Pagination,
   TableSortLabel,
   OutlinedInput,
+  MenuItem,
+  Select,
 } from "@mui/material";
 const StyledTableContainer = styled(TableContainer)({
   marginTop: 2,
@@ -47,6 +50,17 @@ const HomePage = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const [searchInput, setSearchInput] = useState(""); // 新增搜尋輸入狀態
+  const [selectedValue, setSelectedValue] = React.useState("");
+  const [showPlaceholder, setShowPlaceholder] = React.useState(true);
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
+
+  const [isSnackbarMessage, setSnackbarMessage] = useState("");
+  const [isSnackbarStatus, setSnackbarStatus] = useState("");
+  const handleChange = async (event) => {
+    setSelectedValue(event.target.value);
+    setShowPlaceholder(false);
+  };
+
   const [reset, setReset] = useState(false); // 新增重置狀態
   const navigate = useNavigate();
 
@@ -95,13 +109,21 @@ const HomePage = () => {
       console.error("Error fetching work orders:", response.statusText);
     }
   };
+  const showSnackbar = (message, status) => {
+    setSnackbarOpen(true);
+    setSnackbarMessage(message);
+    setSnackbarStatus(status);
+  };
   const handleWorkSearchSubmit = async () => {
     try {
       let response;
-      if (searchInput === "") {
-        response = await fetch(process.env.REACT_APP_API_BASE_URL + `/api/lists`);
+      console.log(selectedValue);
+      if (searchInput === "" && selectedValue === "") {
+        showSnackbar("請輸入搜尋項目類別與資訊", "error");
+      } else if (searchInput !== "" && selectedValue === "") {
+        showSnackbar("請輸入搜尋項目", "error");
       } else {
-        response = await fetch(process.env.REACT_APP_API_BASE_URL + `/api/searchLists/${searchInput}`);
+        response = await fetch(process.env.REACT_APP_API_BASE_URL + `/api/searchLists/${searchInput}/${selectedValue}`);
         setReset(true);
       }
       if (response.ok) {
@@ -159,8 +181,30 @@ const HomePage = () => {
         首頁
       </Typography>
       <Box>
+        <Select
+          labelId="select-label"
+          id="select"
+          value={selectedValue}
+          onChange={handleChange}
+          displayEmpty
+          sx={{ background: "white", marginRight: "4px" }}
+        >
+          {showPlaceholder && (
+            <MenuItem value="" disabled>
+              請選擇一個選項
+            </MenuItem>
+          )}
+          <MenuItem value="workNumber">報工號碼</MenuItem>
+          <MenuItem value="moNumber">製令單號</MenuItem>
+          <MenuItem value="status">報工狀態</MenuItem>
+          <MenuItem value="location">場別</MenuItem>
+          <MenuItem value="productionLineId">生產線代號</MenuItem>
+          <MenuItem value="productNumber">產品編號</MenuItem>
+          <MenuItem value="productName">產品名稱</MenuItem>
+          <MenuItem value="productSpecification">產品規格</MenuItem>
+        </Select>
         <OutlinedInput
-          placeholder="請輸入搜尋資訊 e.g. 製令單號、報工號"
+          placeholder="請輸入搜尋資訊"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           sx={{
@@ -225,6 +269,7 @@ const HomePage = () => {
       >
         <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color="primary" size="large" />
       </Box>
+      <SnackbarAlert open={isSnackbarOpen} message={isSnackbarMessage} status={isSnackbarStatus} handleClose={() => setSnackbarOpen(false)} />
     </Box>
   );
 };

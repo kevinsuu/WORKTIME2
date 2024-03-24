@@ -36,7 +36,8 @@ router.get("/lists", useAsync(ListController.getList));
 router.get("/lists/:id", useAsync(ListController.getListInfo));
 router.delete("/lists/:id", useAsync(ListController.deleteList));
 router.post("/lists/:id", useAsync(ListController.updateListInfo));
-router.get("/searchLists/:id", useAsync(ListController.searchListInfo));
+router.get("/searchLists/:id/:select", useAsync(ListController.searchListInfo));
+
 router.post("/exportLists/", useAsync(ListController.exportExcel));
 
 // EmployeeList routes

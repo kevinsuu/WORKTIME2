@@ -114,8 +114,7 @@ class ListController {
         `
         SELECT * FROM "lists"
         JOIN "productLine" ON "lists"."productionLineId" = "productLine"."id"
-        WHERE ( "lists"."workNumber" = :params
-        OR "lists"."moNumber" = :params)
+        WHERE ( "lists"."${req.params.select}" = :params)
         AND status != '完成'
         ORDER BY "lists"."workNumber" ASC
       `,
