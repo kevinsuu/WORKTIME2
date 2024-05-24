@@ -79,6 +79,34 @@ class StartWorkController {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }
+  async createOrder(req, res) {
+    try {
+      console.log(req.body);
+      const moNumber = req.body.moNumber.trim();
+      const location = req.body.location;
+      const productNumber = req.body.productNumber;
+      const productName = req.body.productName;
+      const productSpecification = req.body.productSpecification;
+      const expectedProductionQuantity = req.body.expectedProductionQuantity;
+      const productionLineId = req.body.productionInfo.id;
+      if (!productionLineId) {
+        return res.status(400).json({ success: false, error: "找不到產品線" });
+      }
+      const newOrder = await Order.create({
+        moNumber: moNumber,
+        location: location,
+        productionLineId: productionLineId,
+        productNumber: productNumber,
+        productName: productName,
+        productSpecification: productSpecification,
+        expectedProductionQuantity: expectedProductionQuantity,
+      });
+      return res.json({ success: true, newOrder, message: "製令單新增成功" });
+    } catch (error) {
+      console.error("Error retrieving Lists from database:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
 }
 
 module.exports = new StartWorkController();

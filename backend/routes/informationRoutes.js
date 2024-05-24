@@ -50,6 +50,7 @@ router.put("/employeeListSingle/:employeeId/:moNumber/:workNumber", useAsync(emp
 
 // StartWork routes
 router.post("/startWork", useAsync(StartWorkController.insertOrder));
+router.post("/createWork", useAsync(StartWorkController.createOrder));
 
 // ProductLine routes
 router.get("/productLine", useAsync(ProductLineController.getProductLine));
