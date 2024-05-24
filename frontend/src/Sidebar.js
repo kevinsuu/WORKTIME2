@@ -176,6 +176,20 @@ const Sidebar = () => {
         </ListItemButton>
         <ListItemButton
           component={Link}
+          to="/createWork"
+          onClick={handleDialogOpen}
+          sx={{
+            marginBottom: "8px",
+            borderRadius: "8px",
+            "&:hover": { backgroundColor: "#B0A695" },
+            borderBottom: "1px solid #3E3232",
+          }}
+        >
+          <ListItemText primary="新建製令單作業" />
+          <LockIcon />
+        </ListItemButton>
+        <ListItemButton
+          component={Link}
           to="/setSleep"
           onClick={handleDialogOpen}
           sx={{

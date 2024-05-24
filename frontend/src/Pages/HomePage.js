@@ -126,7 +126,9 @@ const HomePage = () => {
         response = await fetch(process.env.REACT_APP_API_BASE_URL + `/api/searchLists/${searchInput}/${selectedValue}`);
         setReset(true);
       }
-      if (response.ok) {
+      if (response.statusText === "Not Found") {
+        showSnackbar("找不到相關資訊", "error");
+      } else if (response.ok) {
         const data = await response.json();
         if (data.listsInfo) {
           setWorkOrders(data.listsInfo);
@@ -198,7 +200,6 @@ const HomePage = () => {
           <MenuItem value="moNumber">製令單號</MenuItem>
           <MenuItem value="status">報工狀態</MenuItem>
           <MenuItem value="location">場別</MenuItem>
-          <MenuItem value="productionLineId">生產線代號</MenuItem>
           <MenuItem value="productNumber">產品編號</MenuItem>
           <MenuItem value="productName">產品名稱</MenuItem>
           <MenuItem value="productSpecification">產品規格</MenuItem>

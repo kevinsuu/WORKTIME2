@@ -83,7 +83,7 @@ class ListController {
         { workNumber: req.params.id }
       );
       if (!Lists) {
-        return res.status(404).json({ error: "List not found" });
+        return res.status(404).json({ success: false, error: "List not found" });
       }
       const formatList = {
         workNumber: Lists[0].workNumber,
@@ -114,14 +114,19 @@ class ListController {
         `
         SELECT * FROM "lists"
         JOIN "productLine" ON "lists"."productionLineId" = "productLine"."id"
-        WHERE ( "lists"."${req.params.select}" = :params)
+        WHERE ( "lists"."${req.params.select}" LIKE  :params)
         AND status != '完成'
         ORDER BY "lists"."workNumber" ASC
       `,
-        { params: req.params.id }
+        { params: `%${req.params.id}%` }
       );
       if (!Lists || Lists.length === 0) {
-        return res.status(404).json({ error: "List not found" });
+        console.log(` SELECT * FROM "lists"
+        JOIN "productLine" ON "lists"."productionLineId" = "productLine"."id"
+        WHERE ( "lists"."${req.params.select}" = :params)
+        AND status != '完成'
+        ORDER BY "lists"."workNumber" ASC`);
+        return res.status(404).json({ success: false, error: "List not found" });
       }
 
       Lists.forEach((list) => {
@@ -255,7 +260,7 @@ class ListController {
         { workNumber: req.params.id }
       );
       if (!Lists) {
-        return res.status(404).json({ error: "List not found" });
+        return res.status(404).json({ success: false, error: "List not found" });
       }
       const employeeList = await EmployeeList.findOne({ where: { workNumber: req.params.id } });
       if (Lists) {
