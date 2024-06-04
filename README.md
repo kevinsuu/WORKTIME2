@@ -15,6 +15,8 @@
   6.  設定密碼
   7.  設定休息時間
   8.  進行已完工工單維護作業
+- 系統架構
+  ![系統架構圖](./frontend/public/Schema.png)
 - 部屬方式:
   - docker-compose up --build -d
   - 目前於 http://130.211.240.127/ 進行作業
