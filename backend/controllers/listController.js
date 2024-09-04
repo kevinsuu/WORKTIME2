@@ -109,46 +109,68 @@ class ListController {
   }
   async searchListInfo(req, res) {
     try {
-      const responeList = [];
-      const Lists = await DataBase.query(
-        `
-        SELECT * FROM "lists"
-        JOIN "productLine" ON "lists"."productionLineId" = "productLine"."id"
-        WHERE ( "lists"."${req.params.select}" LIKE  :params)
-        AND status != '完成'
-        ORDER BY "lists"."workNumber" ASC
-      `,
-        { params: `%${req.params.id}%` }
-      );
+      let ProductLineInfo = null;
+      let Lists = null;
+      const params = `%${req.params.id}%`;
+      if (req.params.select === "productLine") {
+        ProductLineInfo = await DataBase.query(
+          `
+          SELECT * FROM public."productLine" WHERE "productionLineName" LIKE :params;
+          `,
+          { params }
+        );
+
+        if (!ProductLineInfo || ProductLineInfo.length === 0) {
+          return res.status(404).json({ success: false, error: "Production line not found" });
+        }
+
+        const productionLineId = ProductLineInfo[0].id;
+
+        Lists = await DataBase.query(
+          `
+          SELECT * FROM "lists"
+          JOIN "productLine" ON "lists"."productionLineId" = "productLine"."id"
+          WHERE "lists"."productionLineId" = :productionLineId
+          AND "lists".status != '完成'
+          ORDER BY "lists"."workNumber" ASC;
+          `,
+          { productionLineId }
+        );
+      } else {
+        Lists = await DataBase.query(
+          `
+          SELECT * FROM "lists"
+          JOIN "productLine" ON "lists"."productionLineId" = "productLine"."id"
+          WHERE "lists"."${req.params.select}" LIKE :params
+          AND "lists".status != '完成'
+          ORDER BY "lists"."workNumber" ASC;
+          `,
+          { params }
+        );
+      }
+
       if (!Lists || Lists.length === 0) {
-        console.log(` SELECT * FROM "lists"
-        JOIN "productLine" ON "lists"."productionLineId" = "productLine"."id"
-        WHERE ( "lists"."${req.params.select}" = :params)
-        AND status != '完成'
-        ORDER BY "lists"."workNumber" ASC`);
         return res.status(404).json({ success: false, error: "List not found" });
       }
 
-      Lists.forEach((list) => {
-        const formatList = {
-          workNumber: list.workNumber,
-          moNumber: list.moNumber,
-          location: list.location,
-          productionLineId: list.productionLineId,
-          productNumber: list.productNumber,
-          productName: list.productName,
-          productSpecification: list.productSpecification,
-          expectedProductionQuantity: list.expectedProductionQuantity,
-          status: list.status,
-          completedQuantity: list.completedQuantity,
-          remark: list.remark,
-          productionHours: list.productionHours,
-          productionLineName: list.productionLineName,
-          productionLineCode: list.productionLineCode,
-        };
-        responeList.push(formatList);
-      });
-      return res.json({ success: true, listsInfo: responeList });
+      const responseList = Lists.map((list) => ({
+        workNumber: list.workNumber,
+        moNumber: list.moNumber,
+        location: list.location,
+        productionLineId: list.productionLineId,
+        productNumber: list.productNumber,
+        productName: list.productName,
+        productSpecification: list.productSpecification,
+        expectedProductionQuantity: list.expectedProductionQuantity,
+        status: list.status,
+        completedQuantity: list.completedQuantity,
+        remark: list.remark,
+        productionHours: list.productionHours,
+        productionLineName: list.productionLineName,
+        productionLineCode: list.productionLineCode,
+      }));
+
+      return res.json({ success: true, listsInfo: responseList });
     } catch (error) {
       console.error("Error retrieving Lists from database:", error);
       return res.status(500).json({ error: "Internal Server Error" });

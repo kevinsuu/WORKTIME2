@@ -200,6 +200,7 @@ const HomePage = () => {
           <MenuItem value="moNumber">製令單號</MenuItem>
           <MenuItem value="status">報工狀態</MenuItem>
           <MenuItem value="location">場別</MenuItem>
+          <MenuItem value="productLine">產品線</MenuItem>
           <MenuItem value="productNumber">產品編號</MenuItem>
           <MenuItem value="productName">產品名稱</MenuItem>
           <MenuItem value="productSpecification">產品規格</MenuItem>
