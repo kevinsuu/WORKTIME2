@@ -15,7 +15,7 @@ services:
     depends_on:
       - postgres
   postgres:
-    container_name: postgres_worktime2
+    container_name: postgres
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
